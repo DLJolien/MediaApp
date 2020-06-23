@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace MediaApp.Domain
 {
-    public class Comment
+    public class PodcastGenre
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public string PhotoUrl { get; set; }
-        public DateTime PublishedDate { get; set; }
-        public ICollection<MediaComment> MediaComments { get; set; }
     }
 }

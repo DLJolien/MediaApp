@@ -10,7 +10,7 @@ namespace MediaApp.Domain.MediaTypes
 
         public string Singer { get; set; }
         public int GenreId { get; set; }
-        public AudioGenre Genre { get; set; }
+        public MusicGenre Genre { get; set; }
 
         public Music()
         {

@@ -8,7 +8,7 @@ namespace MediaApp.Domain
 {
     public class MediaReview
     {
-        public string MediaId { get; set; }
+        public int MediaId { get; set; }
         public Media Media { get; set; }
         public int ReviewId { get; set; }
         public Review Review { get; set; }

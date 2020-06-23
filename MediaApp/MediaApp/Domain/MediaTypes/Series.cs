@@ -11,7 +11,7 @@ namespace MediaApp.Domain.MediaTypes
         public int NumberOfEpisodes { get; set; }
         public int NumberOfSeasons { get; set; }
         public int GenreId { get; set; }
-        public FilmGenre Genre { get; set; }
+        public virtual FilmGenre Genre { get; set; }
 
         public Series()
         {

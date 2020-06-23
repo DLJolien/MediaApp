@@ -7,9 +7,9 @@ namespace MediaApp.Domain.MediaTypes
 {
     public class Podcast : Media
     {
-        public List<string> Speakers { get; set; }
+        public string Organisation { get; set; }
         public int GenreId { get; set; }
-        public AudioGenre Genre { get; set; }
+        public PodcastGenre Genre { get; set; }
 
         public Podcast()
         {

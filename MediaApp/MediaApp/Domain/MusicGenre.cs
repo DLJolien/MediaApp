@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MediaApp.Domain
 {
-    public class AudioGenre
+    public class MusicGenre
     {
         public int Id { get; set; }
         public string Description { get; set; }

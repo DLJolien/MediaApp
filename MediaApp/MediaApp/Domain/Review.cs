@@ -11,5 +11,7 @@ namespace MediaApp.Domain
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
         public DateTime PublishedDate { get; set; }
+
+        public ICollection<MediaReview> MediaReviews{ get; set; }
     }
 }
