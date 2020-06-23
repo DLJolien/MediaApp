@@ -66,3 +66,17 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.csproj.CopyComplete
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\staticwebassets\MediaApp.StaticWebAssets.Manifest.cache
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\staticwebassets\MediaApp.StaticWebAssets.xml
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.deps.json
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.runtimeconfig.json
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.runtimeconfig.dev.json
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.dll
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.pdb
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.Views.dll
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.Views.pdb
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.Views.pdb
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.dll
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.pdb
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.genruntimeconfig.cache
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.csproj.CoreCompileInputs.cache
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cache
