@@ -46,6 +46,7 @@ namespace MediaApp.Controllers
         }
         public async Task<IActionResult> Detail(int id)
         {
+
             Film film = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
             FilmDetailViewModel vm = new FilmDetailViewModel()
             {
@@ -78,27 +79,40 @@ namespace MediaApp.Controllers
         public async Task<IActionResult> Create(FilmCreateViewModel vm)
         {
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Film newFilm = new Film()
+            if (!TryValidateModel(vm))
             {
-                Title = vm.Title,
-                StatusId = vm.SelectedStatusId,
-                ReleaseDate = vm.ReleaseDate,
-                Director = vm.Director,
-                GenreId = vm.SelectedGenreId,
-                Duration = vm.Duration
-            };
-            if (vm.Photo != null)
-            {
-                string uniqueFileName = _photoService.UploadPicture(vm.Photo);
-                newFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
+                var genres = await _dbContext.FilmGenres.ToListAsync();
+                var statuses = await _dbContext.Statuses.ToListAsync();
+
+                vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
+                vm.Statuses = statuses.Select(status => new SelectListItem() { Value = status.Id.ToString(), Text = status.Description }).ToList();
+
+                return View(vm);
             }
-            else 
+            else
             {
-                _photoService.AssignPicToMedia(newFilm);
+                Film newFilm = new Film()
+                {
+                    Title = vm.Title,
+                    StatusId = vm.SelectedStatusId,
+                    ReleaseDate = vm.ReleaseDate,
+                    Director = vm.Director,
+                    GenreId = vm.SelectedGenreId,
+                    Duration = vm.Duration
+                };
+                if (vm.Photo != null)
+                {
+                    string uniqueFileName = _photoService.UploadPicture(vm.Photo);
+                    newFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
+                }
+                else
+                {
+                    _photoService.AssignPicToMedia(newFilm);
+                }
+                _dbContext.Films.Add(newFilm);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-            _dbContext.Films.Add(newFilm);
-            await _dbContext.SaveChangesAsync();
-            return RedirectToAction("Index");
         }
     }
 }
