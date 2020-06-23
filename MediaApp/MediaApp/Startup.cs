@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MediaApp.Domain;
+using MediaApp.Services;
 
 namespace MediaApp
 {
@@ -35,6 +36,7 @@ namespace MediaApp
                 .AddEntityFrameworkStores<MediaDb>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddTransient<IPhotoService, PhotoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +65,7 @@ namespace MediaApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Film}/{action=Index}");
                 endpoints.MapRazorPages();
             });
         }

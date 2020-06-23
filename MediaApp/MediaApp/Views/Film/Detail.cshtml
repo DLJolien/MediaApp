@@ -1,0 +1,37 @@
+﻿@model FilmDetailViewModel;
+
+@{
+    if (!String.IsNullOrEmpty(Model.PhotoUrl))
+    {
+    <img src="@Model.PhotoUrl" class="photo-url" />
+    }
+}
+<strong>Title:</strong>
+<p>@Model.Title</p>
+
+<strong>Director:</strong>
+<p>@Model.Director</p>
+
+<strong>Release date:</strong>
+<p>@Model.ReleaseDate.ToShortDateString()</p>
+
+<strong>Duration:</strong>
+<p>@Model.Duration</p>
+
+<strong>Status:</strong>
+<p>@Model.Status</p>
+
+<strong>Genre:</strong>
+<p>@Model.Genre</p>
+
+<p>
+    @*<a asp-controller="contact" asp-action="update" asp-route-id="@Model.Id"> Edit</a> |
+    <a asp-controller="contact" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |*@
+    <a asp-controller="contact" asp-action="index"> Back to index</a>
+</p>
+
+<style>
+    .photo-url {
+        max-width: 400px;
+    }
+</style>

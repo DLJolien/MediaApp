@@ -93,7 +93,8 @@ namespace MediaApp.Domain
         public DbSet<Music> Music { get; set; }
         public DbSet<Podcast> Podcasts { get; set; }
         public DbSet<Series> Series { get; set; }
-        public DbSet<MusicGenre> AudioGenres { get; set; }
+        public DbSet<MusicGenre> MusicGenres { get; set; }
+        public DbSet<PodcastGenre> PodcastGenres { get; set; }
         public DbSet<FilmGenre> FilmGenres { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<MediaComment> MediaComments { get; set; }
