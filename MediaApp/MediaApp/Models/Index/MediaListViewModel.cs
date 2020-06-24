@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MediaApp.Models
 {
-    public class FilmListViewModel 
+    public class MediaListViewModel 
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FilmListViewModel>
+﻿@model IEnumerable<MediaListViewModel>
 
 <a asp-controller="Film" asp-action="Create">Add new film</a>
 <br />
@@ -9,51 +9,46 @@
     }
     else
     {
-            
-        
-            @foreach (var film in Model)
-            {                
-                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id"><img src="@film.PhotoUrl" /> </a>
-                <p>@film.Title - @film.ReleaseDate.Year</p> 
-            }
-        
-        }
-    }
-
 <div class="container">
     <div class="row">
-        <div class="col">
-            1 of 2
-        </div>
-        <div class="col">
-            2 of 2
-        </div>
+        @foreach (var film in Model)
+        {
+            <div class="col">
+                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id"><img src="@film.PhotoUrl" /> </a>              
+                <p>@film.Title - @film.ReleaseDate.Year</p>
+            </div>
+
+        }
     </div>
     <div class="row">
+        @foreach (var film in Model)
+        {
         <div class="col">
-            1 of 5
+            <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id"><img src="@film.PhotoUrl" /> </a>
+            <p>@film.Title - @film.ReleaseDate.Year</p>
         </div>
-        <div class="col">
-            2 of 5
-        </div>
-        <div class="col">
-            3 of 5
-        </div>
-        <div class="col">
-            4 of 5
-        </div>
-        <div class="col">
-            5 of 5
-        </div>
+
+        }
     </div>
 </div>
 
-<style>
-    img {
-        width: 200px;
-        height: 250px;
     }
-    .col{
+}
+
+
+
+<style>
+    div .col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    img {
+        width: 240px;
+        height: 280px;
+    }
+
+    .col {
         border: solid 1px;
     }
 </style>

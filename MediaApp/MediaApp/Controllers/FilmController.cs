@@ -27,11 +27,11 @@ namespace MediaApp.Controllers
         public async Task<IActionResult> Index()
         {
 
-            List<FilmListViewModel> vmList = new List<FilmListViewModel>();
+            List<MediaListViewModel> vmList = new List<MediaListViewModel>();
             var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderBy(film => film.ReleaseDate).ToListAsync();
             foreach (var film in films)
             {
-                FilmListViewModel vm = new FilmListViewModel()
+                MediaListViewModel vm = new MediaListViewModel()
                 {
                     Id = film.Id,
                     Title = film.Title,
