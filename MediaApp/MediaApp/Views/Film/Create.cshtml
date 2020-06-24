@@ -31,6 +31,10 @@
             <select class="form-control" asp-for="SelectedStatusId" asp-items="@Model.Statuses"></select>
         </div>
         <div class="form-group">
+            <label asp-for="ContentUrl"></label>
+            <input asp-for="ContentUrl" />
+        </div>
+        <div class="form-group">
             <label asp-for="Photo"></label>
             <input asp-for="Photo" class="form-control" />
         </div>

@@ -25,6 +25,11 @@
 <strong>Genre:</strong>
 <p>@Model.Genre</p>
 
+@if(!String.IsNullOrEmpty(@Model.ContentUrl))
+{
+<a href="@Model.ContentUrl">View content</a>
+}
+
 <p>
     <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
     <a asp-controller="film" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |

@@ -28,7 +28,7 @@ namespace MediaApp.Controllers
         {
 
             List<FilmListViewModel> vmList = new List<FilmListViewModel>();
-            var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).ToListAsync();
+            var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderBy(film => film.ReleaseDate).ToListAsync();
             foreach (var film in films)
             {
                 FilmListViewModel vm = new FilmListViewModel()
@@ -58,7 +58,8 @@ namespace MediaApp.Controllers
                 PhotoUrl = film.PhotoUrl,
                 Director = film.Director,
                 Genre = film.Genre.Description,
-                Duration = film.Duration
+                Duration = film.Duration,
+                ContentUrl = film.ContentUrl
 
             };
             return View(vm);
@@ -100,7 +101,8 @@ namespace MediaApp.Controllers
                     ReleaseDate = vm.ReleaseDate,
                     Director = vm.Director,
                     GenreId = vm.SelectedGenreId,
-                    Duration = vm.Duration
+                    Duration = vm.Duration,
+                    ContentUrl = vm.ContentUrl
                 };
                 if (vm.Photo != null)
                 {
@@ -137,6 +139,7 @@ namespace MediaApp.Controllers
                 vm.Director = filmToEdit.Director;
                 vm.SelectedGenreId = filmToEdit.Genre.Id;
                 vm.Duration = filmToEdit.Duration;
+                vm.ContentUrl = filmToEdit.ContentUrl;
 
                 return View(vm);
             }
@@ -153,6 +156,7 @@ namespace MediaApp.Controllers
                     changedFilm.Director = vm.Director;
                     changedFilm.GenreId = vm.SelectedGenreId;
                     changedFilm.Duration = vm.Duration;
+                    changedFilm.ContentUrl = vm.ContentUrl;
 
                 if (vm.Photo != null)
                 {

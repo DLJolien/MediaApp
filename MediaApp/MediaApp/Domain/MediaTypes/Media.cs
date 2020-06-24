@@ -14,6 +14,7 @@ namespace MediaApp.Domain.MediaTypes
         public string PhotoUrl { get; set; }
         public int StatusId { get; set; }
         public Status Status { get; set; }
+        public string ContentUrl { get; set; }
         public ICollection<MediaReview> MediaReviews { get; set; }
 
         public ICollection<MediaComment> MediaComments { get; set; }
@@ -21,5 +22,6 @@ namespace MediaApp.Domain.MediaTypes
         {
             ReleaseDate = DateTime.Now;
         }
+       
     }
 }

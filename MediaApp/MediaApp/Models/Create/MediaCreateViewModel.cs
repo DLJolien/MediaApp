@@ -21,7 +21,7 @@ namespace MediaApp.Models
         public List<SelectListItem> Statuses { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
 
-
+        public string ContentUrl { get; set; }
         public int SelectedGenreId { get; set; }
         public IFormFile Photo { get; set; }
     }
