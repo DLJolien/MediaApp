@@ -28,7 +28,7 @@ namespace MediaApp.Controllers
         {
 
             List<MediaListViewModel> vmList = new List<MediaListViewModel>();
-            var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderBy(film => film.ReleaseDate).ToListAsync();
+            var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderByDescending(film => film.ReleaseDate).ToListAsync();
             foreach (var film in films)
             {
                 MediaListViewModel vm = new MediaListViewModel()

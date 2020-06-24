@@ -1,43 +1,167 @@
 ﻿@model FilmDetailViewModel;
 
-@{
-    if (!String.IsNullOrEmpty(Model.PhotoUrl))
-    {
-    <img src="@Model.PhotoUrl" class="photo-url" />
-    }
-}
-<br />
-<strong>Title:</strong>
-<p>@Model.Title</p>
-
-<strong>Director:</strong>
-<p>@Model.Director</p>
-
-<strong>Release date:</strong>
-<p>@Model.ReleaseDate.ToShortDateString()</p>
-
-<strong>Duration:</strong>
-<p>@Model.Duration</p>
-
-<strong>Status:</strong>
-<p>@Model.Status</p>
-
-<strong>Genre:</strong>
-<p>@Model.Genre</p>
-
-@if(!String.IsNullOrEmpty(@Model.ContentUrl))
-{
-<a href="@Model.ContentUrl">View content</a>
-}
-
-<p>
-    <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
-    <a asp-controller="film" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |
-    <a asp-controller="film" asp-action="index"> Back to film overview</a>
-</p>
+<div class="grid-container">
+    <div class="Photo">
+        <img src="@Model.PhotoUrl" class="photo-url" />
+    </div>
+    <div class="Title">
+        @Model.Title
+    </div>
+        <div class="Director-Label">
+            <strong>Director</strong>
+        </div>
+        <div class="Director-Input">
+            <p>@Model.Director</p>
+        </div>
+        <div class="Release-Date-Label">
+            <strong>Release date</strong>
+        </div>
+        <div class="Release-Date-Input">
+            <p>@Model.ReleaseDate.ToShortDateString()</p>
+        </div>
+        <div class="Duration-Label">
+            <strong>Duration</strong>
+        </div>
+        <div class="Duration-Input">
+            <p>@Model.Duration</p>
+        </div>
+        <div class="Genre-Label">
+            <strong>Genre</strong>
+        </div>
+        <div class="Genre-Input">
+            <p>@Model.Genre</p>
+        </div>
+        <div class="Status-Label">
+            <strong>Status</strong>
+        </div>
+        <div class="Status-Input">
+            <p>@Model.Status</p>
+        </div>
+    
+    
+        <div class="View-Content">
+            @if(!String.IsNullOrEmpty(@Model.ContentUrl)){
+            <form action="@Model.ContentUrl">
+                <input type="submit" value="View Content" />
+            </form>
+            }
+        </div>
+    <div class="Functions">
+        <p>
+            <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
+            <a asp-controller="film" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |
+            <a asp-controller="film" asp-action="index"> Back to film overview</a>
+        </p>
+    </div>
+</div>
 
 <style>
+    .View-Content form{
+        width: 100%;
+    }
+    .View-Content form input {
+        width: 100%;
+        height: 100%;
+    }
     .photo-url {
         max-width: 400px;
+        max-height: 450px;
+    }
+
+    div .col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1px 1px;
+        grid-template-areas: "Photo Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Status-Label Status-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+    }
+
+    .Photo {
+        display: flex;
+        justify-content: center;
+        grid-area: Photo;
+    }
+
+    .Title {
+        display: flex;
+        justify-content: center;
+        grid-area: Title;
+        font-size: 40px;
+        letter-spacing: 2px;
+    }
+
+    .Functions {
+        grid-area: Functions;
+        display: flex;
+        justify-content: center;
+    }
+
+    .View-Content {
+        display: flex;
+        justify-content: center;
+        grid-area: View-Content;
+        font-size: 20px;
+        padding-left: 5%;
+    }
+
+    .Director-Label {
+        grid-area: Director-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Release-Date-Label {
+        grid-area: Release-Date-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Duration-Label {
+        grid-area: Duration-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Genre-Label {
+        grid-area: Genre-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Status-Label {
+        grid-area: Status-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Director-Input {
+        grid-area: Director-Input;
+        font-size: 20px;
+    }
+
+    .Release-Date-Input {
+        grid-area: Release-Date-Input;
+        font-size: 20px;
+    }
+
+    .Duration-Input {
+        grid-area: Duration-Input;
+        font-size: 20px;
+    }
+
+    .Genre-Input {
+        grid-area: Genre-Input;
+        font-size: 20px;
+    }
+
+    .Status-Input {
+        grid-area: Status-Input;
+        font-size: 20px;
     }
 </style>

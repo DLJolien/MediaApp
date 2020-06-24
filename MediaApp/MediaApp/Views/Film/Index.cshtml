@@ -13,21 +13,14 @@
     <div class="row">
         @foreach (var film in Model)
         {
-            <div class="col">
-                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id"><img src="@film.PhotoUrl" /> </a>              
-                <p>@film.Title - @film.ReleaseDate.Year</p>
+            <div class="col-3">
+                <div class="item">
+                    <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                        <img src="@film.PhotoUrl" />
+                        <p>@film.Title - @film.ReleaseDate.Year</p>
+                    </a>
+                </div>
             </div>
-
-        }
-    </div>
-    <div class="row">
-        @foreach (var film in Model)
-        {
-        <div class="col">
-            <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id"><img src="@film.PhotoUrl" /> </a>
-            <p>@film.Title - @film.ReleaseDate.Year</p>
-        </div>
-
         }
     </div>
 </div>
@@ -38,17 +31,28 @@
 
 
 <style>
-    div .col {
+
+    div .col-3 .item {
+        width: 100%;
+    }
+
+        div .col-3 .item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black;
+        }
+    div .col-3 {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
     }
     img {
         width: 240px;
         height: 280px;
     }
 
-    .col {
+    .col-3 {
         border: solid 1px;
     }
 </style>
