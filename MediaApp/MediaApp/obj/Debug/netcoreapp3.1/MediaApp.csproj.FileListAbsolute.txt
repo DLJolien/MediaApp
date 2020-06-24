@@ -83,3 +83,5 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Index.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Create.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Detail.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Delete.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Edit.cshtml.g.cs

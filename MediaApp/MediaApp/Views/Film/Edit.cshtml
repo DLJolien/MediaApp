@@ -1,0 +1,46 @@
+﻿@using MediaApp.Models.Edit
+
+@model FilmEditViewModel
+
+    <form asp-controller="Film" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <img src="@Model.PhotoUrl" class="photo-url" />
+        <div class="form-group">
+            <label asp-for="Photo">Change photo</label>
+            <input asp-for="Photo" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" />
+            <span class="text-danger" asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ReleaseDate">Release Date</label>
+            <input type="date" asp-for="ReleaseDate" />
+            <span class="text-danger" asp-validation-for="ReleaseDate"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Director"></label>
+            <input asp-for="Director" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Duration"></label>
+            <input asp-for="Duration" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Genres">Genre</label>
+            <select asp-for="@Model.SelectedGenreId" asp-items="@Model.Genres">
+            </select>
+            <span class="text-danger" asp-validation-for="SelectedGenreId"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Statuses"></label>
+            <select class="form-control" asp-for="SelectedStatusId" asp-items="@Model.Statuses"></select>
+        </div>
+        <button class="btn-success" type="submit">Update film</button>
+    </form>
+
+    <style>
+        .photo-url {
+            max-width: 400px;
+        }
+    </style>

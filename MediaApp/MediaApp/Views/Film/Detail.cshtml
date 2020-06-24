@@ -6,6 +6,7 @@
     <img src="@Model.PhotoUrl" class="photo-url" />
     }
 }
+<br />
 <strong>Title:</strong>
 <p>@Model.Title</p>
 
@@ -25,9 +26,9 @@
 <p>@Model.Genre</p>
 
 <p>
-    @*<a asp-controller="contact" asp-action="update" asp-route-id="@Model.Id"> Edit</a> |
-    <a asp-controller="contact" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |*@
-    <a asp-controller="contact" asp-action="index"> Back to index</a>
+    <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
+    <a asp-controller="film" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |
+    <a asp-controller="film" asp-action="index"> Back to film overview</a>
 </p>
 
 <style>
