@@ -1,4 +1,5 @@
 ﻿using MediaApp.Domain.MediaTypes;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MediaApp.Domain
 {
-    public class MediaDb : DbContext
+    public class MediaDb : IdentityDbContext<MediaUser>
     {
         public MediaDb(DbContextOptions<MediaDb> options) : base(options)
         {

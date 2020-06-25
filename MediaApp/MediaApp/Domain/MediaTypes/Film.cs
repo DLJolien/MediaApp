@@ -16,5 +16,6 @@ namespace MediaApp.Domain.MediaTypes
             Duration = TimeSpan.FromMinutes(120);
         }
 
+
     }
 }

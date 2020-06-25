@@ -7,45 +7,51 @@
     <div class="Title">
         @Model.Title
     </div>
-        <div class="Director-Label">
-            <strong>Director</strong>
-        </div>
-        <div class="Director-Input">
-            <p>@Model.Director</p>
-        </div>
-        <div class="Release-Date-Label">
-            <strong>Release date</strong>
-        </div>
-        <div class="Release-Date-Input">
-            <p>@Model.ReleaseDate.ToShortDateString()</p>
-        </div>
-        <div class="Duration-Label">
-            <strong>Duration</strong>
-        </div>
-        <div class="Duration-Input">
-            <p>@Model.Duration</p>
-        </div>
-        <div class="Genre-Label">
-            <strong>Genre</strong>
-        </div>
-        <div class="Genre-Input">
-            <p>@Model.Genre</p>
-        </div>
-        <div class="Status-Label">
-            <strong>Status</strong>
-        </div>
-        <div class="Status-Input">
-            <p>@Model.Status</p>
-        </div>
-    
-    
-        <div class="View-Content">
-            @if(!String.IsNullOrEmpty(@Model.ContentUrl)){
-            <form action="@Model.ContentUrl">
-                <input type="submit" value="View Content" />
-            </form>
+    <div class="Director-Label">
+        <strong>Director</strong>
+    </div>
+    <div class="Director-Input">
+        <p>@Model.Director</p>
+    </div>
+    <div class="Release-Date-Label">
+        <strong>Release date</strong>
+    </div>
+    <div class="Release-Date-Input">
+        <p>@Model.ReleaseDate.ToShortDateString()</p>
+    </div>
+    <div class="Duration-Label">
+        <strong>Duration</strong>
+    </div>
+    <div class="Duration-Input">
+        <p>@Model.Duration</p>
+    </div>
+    <div class="Genre-Label">
+        <strong>Genre</strong>
+    </div>
+    <div class="Genre-Input">
+        <p>@Model.Genre</p>
+    </div>
+    <div class="Status-Label">
+        <strong>Status</strong>
+    </div>
+    <div class="Status-Input">
+        <p>@Model.Status</p>
+    </div>
+    <div class="Accessibility-Label">
+        <strong>Accessibility</strong>
+    </div>
+    <div class="Accessibility-Input">
+        <p>@Model.Accessibility</p>
+    </div>
+
+
+    <div class="View-Content">
+        @if(!String.IsNullOrEmpty(@Model.ContentUrl)){
+        <form action="@Model.ContentUrl">
+            <input type="submit" value="View Content" />
+        </form>
             }
-        </div>
+    </div>
     <div class="Functions">
         <p>
             <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
@@ -56,16 +62,18 @@
 </div>
 
 <style>
-    .View-Content form{
+    .View-Content form {
         width: 100%;
     }
-    .View-Content form input {
-        width: 100%;
-        height: 100%;
-    }
+
+        .View-Content form input {
+            width: 100%;
+            height: 100%;
+        }
+
     .photo-url {
         max-width: 400px;
-        max-height: 450px;
+        max-height: 7fr;
     }
 
     div .col {
@@ -77,9 +85,9 @@
     .grid-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 1px 1px;
-        grid-template-areas: "Photo Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Status-Label Status-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+        grid-template-areas: "Title Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Status-Label Status-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
     }
 
     .Photo {
@@ -162,6 +170,15 @@
 
     .Status-Input {
         grid-area: Status-Input;
+        font-size: 20px;
+    }
+    .Accessibility-Input {
+        grid-area: Accessibility-Input;
+        font-size: 20px;
+    }
+    .Accessibility-Label {
+        grid-area: Accessibility-Label;
+        padding-left: 10%;
         font-size: 20px;
     }
 </style>

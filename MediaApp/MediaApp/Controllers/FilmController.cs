@@ -38,14 +38,24 @@ namespace MediaApp.Controllers
                     Status = film.Status.Description,
                     ReleaseDate = film.ReleaseDate,
                     PhotoUrl = film.PhotoUrl,
-                    Genre = film.Genre.Description,                  
-                    
+                    Genre = film.Genre.Description,
+
                 };
                 vmList.Add(vm);
             }
             return View(vmList);
         }
-        public async Task<IActionResult> Detail(int id)
+            //}
+            //public async Task<IActionResult> Index(int pageNumber = 1)
+            //{
+
+
+            //    var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).ToListAsync();
+            //    MediaListViewModel<Film> vm = new MediaListViewModel<Film>(films, films.Count, pageNumber, 4);
+
+            //    return View(await vm.CreateAsync(films.AsQueryable(), pageNumber, 4));
+            //}
+            public async Task<IActionResult> Detail(int id)
         {
 
             Film film = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
@@ -59,7 +69,8 @@ namespace MediaApp.Controllers
                 Director = film.Director,
                 Genre = film.Genre.Description,
                 Duration = film.Duration,
-                ContentUrl = film.ContentUrl
+                ContentUrl = film.ContentUrl,
+                Accessibility = film.Accessibility
 
             };
             return View(vm);
@@ -102,8 +113,19 @@ namespace MediaApp.Controllers
                     Director = vm.Director,
                     GenreId = vm.SelectedGenreId,
                     Duration = vm.Duration,
-                    ContentUrl = vm.ContentUrl
+                    Accessibility = vm.Public,
+                    
                 };
+                if (!String.IsNullOrEmpty(vm.ContentUrl))
+                {
+                    newFilm.ContentUrl = vm.ContentUrl;
+                }
+                else
+                {
+                    string query = newFilm.Title.Replace(' ', '+');
+                    newFilm.ContentUrl = "https://www.youtube.com/results?search_query=" + query;
+                }
+
                 if (vm.Photo != null)
                 {
                     string uniqueFileName = _photoService.UploadPicture(vm.Photo);
@@ -140,6 +162,7 @@ namespace MediaApp.Controllers
                 vm.SelectedGenreId = filmToEdit.Genre.Id;
                 vm.Duration = filmToEdit.Duration;
                 vm.ContentUrl = filmToEdit.ContentUrl;
+                vm.Public = filmToEdit.Accessibility;
 
                 return View(vm);
             }
@@ -157,6 +180,7 @@ namespace MediaApp.Controllers
                     changedFilm.GenreId = vm.SelectedGenreId;
                     changedFilm.Duration = vm.Duration;
                     changedFilm.ContentUrl = vm.ContentUrl;
+                    changedFilm.Accessibility = vm.Public;
 
                 if (vm.Photo != null)
                 {

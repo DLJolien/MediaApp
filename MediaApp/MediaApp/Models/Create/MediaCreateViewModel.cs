@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MediaApp.Models
@@ -20,8 +21,13 @@ namespace MediaApp.Models
         public int SelectedStatusId { get; set; } = 1;
         public List<SelectListItem> Statuses { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
+        public string Public { get; set; } = "Public";
+        public List<SelectListItem> PublicStatus = new List<SelectListItem>(){
+            new SelectListItem(){ Value = "Public", Text="Public"},
+            new SelectListItem(){ Value = "Private", Text="Private"}};
 
         public string ContentUrl { get; set; }
+
         public int SelectedGenreId { get; set; }
         public IFormFile Photo { get; set; }
     }
