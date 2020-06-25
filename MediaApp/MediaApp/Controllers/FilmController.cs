@@ -190,10 +190,10 @@ namespace MediaApp.Controllers
                 }
                 _dbContext.Films.Update(changedFilm);
                     await _dbContext.SaveChangesAsync();
-                //}
+            //}
 
-                return (RedirectToAction("Index"));
-            }
+            return RedirectToAction("Detail", new { Id = vm.Id });
+        }
             [HttpGet]
             public async Task<IActionResult> Delete(int id)
             {
