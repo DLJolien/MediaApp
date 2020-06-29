@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<MediaListViewModel>
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<MediaApp.Domain.MediaUser> signInManager
+@inject SignInManager<MediaApp.Domain.User> signInManager
 
 @if (signInManager.IsSignedIn(User))
 {
@@ -63,7 +63,22 @@
             Next
         </a>*@
 
+<body onload="Observer()"> </body>
 
+    <script>
+        var page = 1;
+        window.onscroll = function (ev) {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                //ifrm = document.createElement("IFRAME");
+                //ifrm.setAttribute("src", page + ".html");
+                //ifrm.style.width = 100 + "%";
+                //ifrm.style.height = 800 + "px";
+                //document.body.appendChild(ifrm);
+                console.log("end");
+                page++
+            }
+        };
+    </script>
     <style>
 
         div .col-3 .item {

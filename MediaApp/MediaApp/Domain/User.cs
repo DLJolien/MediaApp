@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MediaApp.Domain
 {
-    public class MediaUser : IdentityUser
+    public class User : IdentityUser
     {
         public string PhotoUrl { get; set; }
     }

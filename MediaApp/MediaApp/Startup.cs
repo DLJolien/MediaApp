@@ -14,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MediaApp.Domain;
 using MediaApp.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using MediaApp.Domain.Authorization;
 
 namespace MediaApp
 {
@@ -32,10 +35,20 @@ namespace MediaApp
             services.AddDbContext<MediaDb>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<MediaUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MediaDb>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddControllers(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
+            services.AddSingleton<IAuthorizationHandler,
+                        MediaAdministratorsAuthorizationHandler>();
             services.AddTransient<IPhotoService, PhotoService>();
         }
 
@@ -69,5 +82,6 @@ namespace MediaApp
                 endpoints.MapRazorPages();
             });
         }
+       
     }
 }

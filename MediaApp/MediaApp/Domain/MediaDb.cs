@@ -1,14 +1,16 @@
 ﻿using MediaApp.Domain.MediaTypes;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace MediaApp.Domain
 {
-    public class MediaDb : IdentityDbContext<MediaUser>
+    public class MediaDb : IdentityDbContext<User>
     {
         public MediaDb(DbContextOptions<MediaDb> options) : base(options)
         {
@@ -54,8 +56,55 @@ namespace MediaApp.Domain
                new PodcastGenre() { Id = 9, Description = "Interview" },
                new PodcastGenre() { Id = 10, Description = "News & Politics" }
                );
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole() { Id=1.ToString(), Name = "Admin", NormalizedName= "Admin" },
+                new IdentityRole() { Id = 2.ToString(), Name = "User", NormalizedName= "User" }
+                );
+            modelBuilder.Entity<User>().HasData(
+                new User() {
+                    PasswordHash = HashPassword("password"),
+                    Id = 1.ToString(),
+                    UserName = "admin@email.com",
+                    NormalizedUserName = "admin@email.com",
+                    Email = "admin@email.com",
+                    NormalizedEmail = "admin@email.com",
+                    EmailConfirmed = true,
+                    LockoutEnabled = false,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhotoUrl = "/users/" + "admin.png"
+                },
+                new User()
+                {
+                    PasswordHash = HashPassword("password"),
+                    Id = 2.ToString(),
+                    UserName = "user@email.com",
+                    NormalizedUserName = "user@email.com",
+                    Email = "user@email.com",
+                    NormalizedEmail = "user@email.com",
+                    EmailConfirmed = true,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhotoUrl = "/users/" + "user.png"
+                });
 
-
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>()
+                {
+                    RoleId = 1.ToString(),
+                    UserId = 1.ToString(),
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = 2.ToString(),
+                    UserId = 2.ToString(),
+                },
+                new IdentityUserRole<string>()
+                {
+                    RoleId = 2.ToString(),
+                    UserId = "eb96f0ca-8373-45af-bffe-d804fd6f4ded"
+                }
+                
+            );
 
             modelBuilder.Entity<MediaComment>().HasKey(mc => new { mc.MediaId, mc.CommentId });
 
@@ -102,5 +151,23 @@ namespace MediaApp.Domain
         public DbSet<Review> Reviews { get; set; }
         public DbSet<MediaReview> Mediareviews { get; set; }
         public DbSet<Status> Statuses { get; set; }
+        private static string HashPassword(string password)
+        {
+            byte[] salt;
+            byte[] buffer2;
+            if (password == null)
+            {
+                throw new ArgumentNullException("password");
+            }
+            using (Rfc2898DeriveBytes bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+            {
+                salt = bytes.Salt;
+                buffer2 = bytes.GetBytes(0x20);
+            }
+            byte[] dst = new byte[0x31];
+            Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
+            Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
+            return Convert.ToBase64String(dst);
+        }
     }
 }

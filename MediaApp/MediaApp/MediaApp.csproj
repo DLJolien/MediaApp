@@ -10,6 +10,8 @@
     <Compile Remove="Data\Migrations\20200623113503_FirstMigration.Designer.cs" />
     <Compile Remove="Data\Migrations\20200623122016_NoDeleteOnStatus.cs" />
     <Compile Remove="Data\Migrations\20200623122016_NoDeleteOnStatus.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200625114447_ChangedMediaUserToUser.cs" />
+    <Compile Remove="Data\Migrations\20200625114447_ChangedMediaUserToUser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\icons\" />
+    <Folder Include="wwwroot\users\" />
   </ItemGroup>
 
 </Project>

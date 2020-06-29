@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using MediaApp.Areas.Identity.Pages.Account;
 using MediaApp.Domain;
 using MediaApp.Domain.MediaTypes;
 using MediaApp.Models;
 using MediaApp.Models.Edit;
 using MediaApp.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,18 +21,31 @@ namespace MediaApp.Controllers
     {
         private readonly MediaDb _dbContext;
         private readonly IPhotoService _photoService;
+        private readonly SignInManager<User> _signInManager;
 
-        public FilmController(MediaDb dbcontext, IPhotoService photoService)
+        public FilmController(MediaDb dbcontext, IPhotoService photoService, SignInManager<User> signInManager)
         {
             _dbContext = dbcontext;
             _photoService = photoService;
+            _signInManager = signInManager;
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            IEnumerable<Film> films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderByDescending(film => film.ReleaseDate).ToListAsync();
+
+            if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                films = films.Where(film => film.UserId == userId || film.Accessibility == "Public");
+            }
+            else if(!_signInManager.IsSignedIn(User))
+            {
+                films = films.Where(film => film.Accessibility == "Public");
+            }
 
             List<MediaListViewModel> vmList = new List<MediaListViewModel>();
-            var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderByDescending(film => film.ReleaseDate).ToListAsync();
+
             foreach (var film in films)
             {
                 MediaListViewModel vm = new MediaListViewModel()
@@ -45,23 +62,14 @@ namespace MediaApp.Controllers
             }
             return View(vmList);
         }
-            //}
-            //public async Task<IActionResult> Index(int pageNumber = 1)
-            //{
-
-
-            //    var films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).ToListAsync();
-            //    MediaListViewModel<Film> vm = new MediaListViewModel<Film>(films, films.Count, pageNumber, 4);
-
-            //    return View(await vm.CreateAsync(films.AsQueryable(), pageNumber, 4));
-            //}
-            public async Task<IActionResult> Detail(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Detail(int id)
         {
 
             Film film = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
             FilmDetailViewModel vm = new FilmDetailViewModel()
             {
-                Id= film.Id,
+                Id = film.Id,
                 Title = film.Title,
                 Status = film.Status.Description,
                 ReleaseDate = film.ReleaseDate,
@@ -75,6 +83,7 @@ namespace MediaApp.Controllers
             };
             return View(vm);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -88,11 +97,11 @@ namespace MediaApp.Controllers
 
             return View(vm);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(FilmCreateViewModel vm)
         {
-            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!TryValidateModel(vm))
             {
                 var genres = await _dbContext.FilmGenres.ToListAsync();
@@ -114,7 +123,9 @@ namespace MediaApp.Controllers
                     GenreId = vm.SelectedGenreId,
                     Duration = vm.Duration,
                     Accessibility = vm.Public,
-                    
+                    UserId = userId
+
+
                 };
                 if (!String.IsNullOrEmpty(vm.ContentUrl))
                 {
@@ -140,11 +151,13 @@ namespace MediaApp.Controllers
                 return RedirectToAction("Index");
             }
         }
-            [HttpGet]
-            public async Task<IActionResult> Edit(int id)
-            {
-                Film filmToEdit = await _dbContext.Films.Include(x => x.Genre).Include(x =>x.Status).FirstOrDefaultAsync(x => x.Id == id);
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
 
+            Film filmToEdit = await _dbContext.Films.Include(x => x.Genre).Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == id);
+            if (User.IsInRole("Admin") || filmToEdit.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
                 FilmEditViewModel vm = new FilmEditViewModel();
 
                 var genres = await _dbContext.FilmGenres.ToListAsync();
@@ -165,60 +178,76 @@ namespace MediaApp.Controllers
                 vm.Public = filmToEdit.Accessibility;
 
                 return View(vm);
+
             }
-            [HttpPost]
-            public async Task<IActionResult> Edit(FilmEditViewModel vm)
+            else
             {
-                Film changedFilm = await _dbContext.Films.Include(x => x.Genre).Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == vm.Id);
-                //if (changedFilm.BankAppIdentityId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                //{
-                   
-                    changedFilm.Title = vm.Title;
-                    changedFilm.StatusId = vm.SelectedStatusId;
-                    changedFilm.ReleaseDate = vm.ReleaseDate;
-                    changedFilm.Director = vm.Director;
-                    changedFilm.GenreId = vm.SelectedGenreId;
-                    changedFilm.Duration = vm.Duration;
-                    changedFilm.ContentUrl = vm.ContentUrl;
-                    changedFilm.Accessibility = vm.Public;
+                return LocalRedirect("/Identity/Account/AccessDenied");
+            }
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(FilmEditViewModel vm)
+        {
+            Film changedFilm = await _dbContext.Films.Include(x => x.Genre).Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == vm.Id);
+            if (User.IsInRole("Admin") || changedFilm.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
 
-                if (vm.Photo != null)
-                {
-                    _photoService.DeletePicture(changedFilm.PhotoUrl);
-                    string uniqueFileName = _photoService.UploadPicture(vm.Photo);
-                    changedFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
-                }
-                _dbContext.Films.Update(changedFilm);
-                    await _dbContext.SaveChangesAsync();
-            //}
+                changedFilm.Title = vm.Title;
+            changedFilm.StatusId = vm.SelectedStatusId;
+            changedFilm.ReleaseDate = vm.ReleaseDate;
+            changedFilm.Director = vm.Director;
+            changedFilm.GenreId = vm.SelectedGenreId;
+            changedFilm.Duration = vm.Duration;
+            changedFilm.ContentUrl = vm.ContentUrl;
+            changedFilm.Accessibility = vm.Public;
 
+            if (vm.Photo != null)
+            {
+                _photoService.DeletePicture(changedFilm.PhotoUrl);
+                string uniqueFileName = _photoService.UploadPicture(vm.Photo);
+                changedFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
+            }
+            _dbContext.Films.Update(changedFilm);
+            await _dbContext.SaveChangesAsync();
+            }
             return RedirectToAction("Detail", new { Id = vm.Id });
         }
-            [HttpGet]
-            public async Task<IActionResult> Delete(int id)
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Film filmToDelete = await _dbContext.Films.FindAsync(id);
+            if (User.IsInRole("Admin") || filmToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
-                Film FilmToDelete = await _dbContext.Films.FindAsync(id);
                 MediaDeleteViewModel vm = new MediaDeleteViewModel()
                 {
-                    Id = FilmToDelete.Id,
-                    Title = FilmToDelete.Title,
-                    ReleaseDate = FilmToDelete.ReleaseDate
+                    Id = filmToDelete.Id,
+                    Title = filmToDelete.Title,
+                    ReleaseDate = filmToDelete.ReleaseDate
                 };
 
                 return View(vm);
             }
-            [HttpPost]
-            public async Task<IActionResult> ConfirmDelete(int id)
+            else
             {
-                Film FilmToDelete = _dbContext.Films.Find(id);
-                //if (FilmToDelete.BankAppIdentityId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                //{
-                    _dbContext.Films.Remove(FilmToDelete);
-                    await _dbContext.SaveChangesAsync();
-                //}
-
-                return (RedirectToAction("Index"));
+                return LocalRedirect("/Identity/Account/AccessDenied");
             }
-        
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            Film filmToDelete = _dbContext.Films.Find(id);
+            if (User.IsInRole("Admin") || filmToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                _photoService.DeletePicture(filmToDelete.PhotoUrl);
+                _dbContext.Films.Remove(filmToDelete);
+            await _dbContext.SaveChangesAsync();
+            }
+
+            return (RedirectToAction("Index"));
+        }
+
     }
 }
