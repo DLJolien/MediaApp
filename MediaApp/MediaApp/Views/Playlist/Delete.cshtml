@@ -1,0 +1,13 @@
+﻿@model MediaApp.Models.Delete.PlaylistDeleteViewModel
+
+
+<h1>Are you sure you want to delete the playlist @Model.Title?</h1>
+<form asp-controller="Playlist" asp-action="ConfirmDelete" method="post" asp-route-id="@Model.Id">
+    <button>Yes</button>
+</form>
+    <button onclick ="GoToPlaylistIndex()">Cancel</button>
+<script>
+    function GoToPlaylistIndex() {
+        window.location.href= "/Playlist/Index"
+    }
+</script>

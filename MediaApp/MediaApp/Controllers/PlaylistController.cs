@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using MediaApp.Domain;
 using MediaApp.Domain.MediaTypes;
 using MediaApp.Models.Create;
+using MediaApp.Models.Delete;
 using MediaApp.Models.Detail;
 using MediaApp.Models.Index;
 using MediaApp.Services;
@@ -32,7 +34,24 @@ namespace MediaApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string filter = "")
         {
-            IEnumerable<Playlist<Media>> playlists = await _dbContext.Playlists.Include(x => x.User).Include(x => x.PlaylistMedias).ThenInclude(x => x.Media).ToListAsync();
+
+            IEnumerable<Playlist<Media>> playlists;
+
+            if (!String.IsNullOrEmpty(filter))
+            {
+                playlists = await _dbContext.Playlists
+                    .Include(x => x.User)
+                    .Include(x => x.PlaylistMedias)
+                    .ThenInclude(x => x.Media)
+                    .Where(x => x.Title.ToLower().Contains(filter.ToLower()) ||
+                            x.User.UserName.ToLower().Contains(filter.ToLower()))
+                    .ToListAsync();
+            }
+            else
+            {
+                playlists = await _dbContext.Playlists.Include(x => x.User).Include(x => x.PlaylistMedias).ThenInclude(x => x.Media).ToListAsync();
+
+            }
 
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
             {
@@ -43,10 +62,7 @@ namespace MediaApp.Controllers
             {
                 playlists = playlists.Where(playlist => playlist.Public == true);
             }
-            if (!String.IsNullOrEmpty(filter))
-            {
-                playlists = playlists.Where(x => x.Title.ToLower().Contains(filter.ToLower()));
-            }
+
 
             List<PlaylistListViewModel> vmList = new List<PlaylistListViewModel>();
 
@@ -89,6 +105,7 @@ namespace MediaApp.Controllers
                 Playlist<Media> newPlaylist = new Playlist<Media>()
                 {
                     Title = vm.Title,
+                    Public = vm.Public,
                     UserId = userId,
                 };
 
@@ -178,11 +195,11 @@ namespace MediaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFilm(int playlistId, int mediaId)
         {
-            PlaylistMedia playlistMediaToDelete = await _dbContext.PlaylistMedias.FirstOrDefaultAsync( x => x.PlaylistId == playlistId && x.MediaId == mediaId);
+            PlaylistMedia playlistMediaToDelete = await _dbContext.PlaylistMedias.FirstOrDefaultAsync(x => x.PlaylistId == playlistId && x.MediaId == mediaId);
             _dbContext.PlaylistMedias.Remove(playlistMediaToDelete);
             await _dbContext.SaveChangesAsync();
 
-            return  RedirectToAction("ManageFilms", new { id = playlistId });
+            return RedirectToAction("ManageFilms", new { id = playlistId });
         }
         [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
@@ -194,16 +211,43 @@ namespace MediaApp.Controllers
             PlaylistDetailViewModel vm = new PlaylistDetailViewModel()
             {
                 Id = playlist.Id,
-                Title = playlist.Title,              
+                Title = playlist.Title,
                 Public = playlist.Public,
                 PlaylistMedias = playlistMedias,
                 User = await _dbContext.Users.FindAsync(playlist.UserId)
             };
-            if(vm.PlaylistMedias.Count > 0)
+            if (vm.PlaylistMedias.Count > 0)
             {
                 vm.Duration = new TimeSpan(playlist.PlaylistMedias.Select(x => x.Media).Sum(x => x.Duration.Ticks));
             }
             return View(vm);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Playlist<Media> playlistToDelete = await _dbContext.Playlists.FindAsync(id);
+            PlaylistDeleteViewModel vm = new PlaylistDeleteViewModel()
+            {
+                Id = playlistToDelete.Id,
+                Title = playlistToDelete.Title
+            };
+            return View(vm);
+        }
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            Playlist<Media> playlistToDelete = await _dbContext.Playlists.FindAsync(id);
+            if (playlistToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                _dbContext.Playlists.Remove(playlistToDelete);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return (RedirectToAction("Index"));
         }
 
     }
