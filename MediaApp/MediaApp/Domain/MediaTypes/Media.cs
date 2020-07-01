@@ -18,9 +18,11 @@ namespace MediaApp.Domain.MediaTypes
         public string Accessibility { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-        public ICollection<MediaReview> MediaReviews { get; set; }
 
-        public ICollection<MediaComment> MediaComments { get; set; }
+        public ICollection<PlaylistMedia> PlaylistMedias { get; set; }
+        public ICollection<Review> Reviews { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
         public Media()
         {
             ReleaseDate = DateTime.Now;

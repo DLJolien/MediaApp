@@ -4,14 +4,16 @@ using MediaApp.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MediaApp.Data.Migrations
 {
     [DbContext(typeof(MediaDb))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200630133045_ChangedNamePlaylistToTitle")]
+    partial class ChangedNamePlaylistToTitle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,9 +213,6 @@ namespace MediaApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
 
                     b.Property<bool>("Public")
                         .HasColumnType("bit");
@@ -428,16 +427,16 @@ namespace MediaApp.Data.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "35a67bc2-bf46-4917-9c4f-941aea0e0df7",
+                            ConcurrencyStamp = "02746fe2-3f80-4f3c-9b14-66678994bc26",
                             Email = "admin@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin@email.com",
-                            PasswordHash = "AFMSqCPL4JV0dj27m5k7A/kOXFIux3eMLeOtD3v049vqSSz88IJ89Gq2GIHLXH2zOQ==",
+                            PasswordHash = "ADnxV7gBrvqPI1O/GVLObBcSpUxb1pTBA6bd4fTMb6IZ0cwVKhOrS+pUWxC2gwlShA==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/admin.png",
-                            SecurityStamp = "c60c6122-f809-4f84-a441-9f1a2913583f",
+                            SecurityStamp = "31c666f1-2064-4ffe-bdf0-e379c3fd7fd6",
                             TwoFactorEnabled = false,
                             UserName = "admin@email.com"
                         },
@@ -445,16 +444,16 @@ namespace MediaApp.Data.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cb8edb2f-93bd-43d4-ace1-e4625604c2d0",
+                            ConcurrencyStamp = "d7a527ed-cfc9-4894-8c81-34d1c5d99c92",
                             Email = "user@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "user@email.com",
                             NormalizedUserName = "user@email.com",
-                            PasswordHash = "AH+cn29NhmxFv4yfH12SfLqAXwt3NLAt89zDoOBT2GcdURxrUfkcnztcnqmo+m1u9Q==",
+                            PasswordHash = "AJdJY3spUy/rZqCe/ZCIOAArqlKwxc39zCJKgPIId6wFrPw/NxLtYbDiB519LDLvIw==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/user.png",
-                            SecurityStamp = "8597b179-cac0-43e2-bafc-f39aa9d7bf4d",
+                            SecurityStamp = "338c2ae8-6476-43e6-a21f-3420171160f4",
                             TwoFactorEnabled = false,
                             UserName = "user@email.com"
                         });
@@ -490,14 +489,14 @@ namespace MediaApp.Data.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "8644b49b-33f5-406c-963b-916f6d8b223b",
+                            ConcurrencyStamp = "72c00f87-c633-4a96-a61a-cefa0e0c25dc",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "08321c56-fd45-4afa-885e-25a62697ddeb",
+                            ConcurrencyStamp = "0c3d06d3-38b4-41e1-8b58-191a465baf87",
                             Name = "User",
                             NormalizedName = "User"
                         });

@@ -1,0 +1,107 @@
+﻿@model MediaApp.Models.Create.PlaylistAddFilmViewModel
+
+<h1>Now let's add some films to your playlist...</h1>
+
+<button onclick="window.location.href='/playlist/index'">
+        @if (@Model.AlreadyIncluded.Count == 0)
+        {
+            <p>Continue without adding</p>
+        }
+        else
+        {
+            <p>Continue to overview</p>
+        }
+</button>
+
+
+<div class="form-group">
+    <table>
+        @{
+            foreach (var media in Model.AllFilmsInLibrary)
+            {
+                <tr>
+                    <td class="feature">
+                        @if (Model.AlreadyIncluded.Contains(media))
+                        {
+
+                            <form asp-controller="Playlist" asp-action="RemoveFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                                <button type="submit"><i class="fas fa-minus"></i> </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Playlist" asp-action="AddFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                                <button type="submit"><i class="fas fa-plus"></i> </button>
+                            </form>
+                        }
+                    </td>
+                    <td class="img"><img src="@media.PhotoUrl" /></td>
+                    <td class="info">@media.Title</td>
+                    <td class="info">@media.ReleaseDate.Year</td>
+                    <td class="info">@media.Duration</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<script>
+    function addToPlaylist(mediaId) {
+
+        location.reload();
+    }
+    function removeFromPlaylist(mediaId) {
+
+        location.reload();
+    }
+</script>
+<style>
+    tr {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+        tr:hover {
+            background-color: lightgray;
+        }
+
+    table {
+        width: 100%;
+    }
+
+    body > div.container > main > form > div.form-group > table > tbody > tr > td.info {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    body > div.container > main > form > div.form-group > table > tbody > tr > td.img {
+        width: 7%;
+    }
+
+    body > div.container > main > form > div.form-group > table > tbody > tr > td:nth-child(3) {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .info {
+        width: 30%;
+    }
+
+    .feature {
+        width: 3%;
+    }
+
+    img {
+        width: 50px;
+        height: 50px;
+    }
+
+    #basic-info > div:nth-child(1) {
+        width: 50vw;
+    }
+
+    #clickableAwesomeFont {
+        cursor: pointer
+    }
+</style>

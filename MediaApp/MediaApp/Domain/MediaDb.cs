@@ -106,35 +106,22 @@ namespace MediaApp.Domain
                 
             );
 
-            modelBuilder.Entity<MediaComment>().HasKey(mc => new { mc.MediaId, mc.CommentId });
+            modelBuilder.Entity<PlaylistMedia>().HasKey(pm => new { pm.MediaId, pm.PlaylistId });
 
-            modelBuilder.Entity<MediaComment>()
-                .HasOne(mc => mc.Comment)
-                .WithMany(m => m.MediaComments)
-                .HasForeignKey(mc => mc.CommentId);
+            modelBuilder.Entity<PlaylistMedia>()
+                .HasOne(pm => pm.Playlist)
+                .WithMany(p=> p.PlaylistMedias)
+                .HasForeignKey(pm => pm.PlaylistId);
 
-            modelBuilder.Entity<MediaComment>()
-                .HasOne(mc => mc.Media)
-                .WithMany(m => m.MediaComments)
-                .HasForeignKey(mc => mc.MediaId);
-
-            modelBuilder.Entity<MediaReview>().HasKey(mr => new { mr.MediaId, mr.ReviewId });
-
-            modelBuilder.Entity<MediaReview>()
-                .HasOne(mr => mr.Review)
-                .WithMany(m => m.MediaReviews)
-                .HasForeignKey(mr => mr.ReviewId);
-
-            modelBuilder.Entity<MediaReview>()
-                .HasOne(mr => mr.Media)
-                .WithMany(m => m.MediaReviews)
-                .HasForeignKey(mr => mr.MediaId);
+            modelBuilder.Entity<PlaylistMedia>()
+                .HasOne(pm => pm.Media)
+                .WithMany(m => m.PlaylistMedias)
+                .HasForeignKey(pm => pm.MediaId);       
 
             modelBuilder.Entity<Series>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Film>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Music>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Podcast>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<Media>().HasOne(x => x.Status).WithMany().OnDelete(DeleteBehavior.NoAction);
 
         }
@@ -147,10 +134,10 @@ namespace MediaApp.Domain
         public DbSet<PodcastGenre> PodcastGenres { get; set; }
         public DbSet<FilmGenre> FilmGenres { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<MediaComment> MediaComments { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<MediaReview> Mediareviews { get; set; }
         public DbSet<Status> Statuses { get; set; }
+        public DbSet<Playlist<Media>> Playlists { get; set; }
+        public DbSet<PlaylistMedia> PlaylistMedias { get; set; }
         private static string HashPassword(string password)
         {
             byte[] salt;

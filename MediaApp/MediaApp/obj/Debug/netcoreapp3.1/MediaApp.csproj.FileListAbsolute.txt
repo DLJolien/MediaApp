@@ -153,9 +153,6 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.csproj.CoreCompileInputs.cache
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\AccessDenied.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\ConfirmEmail.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\ConfirmEmailChange.cshtml.g.cs
@@ -195,3 +192,11 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Error.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Create.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\MediaApp.StaticWebAssets.xml
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.csproj.CoreCompileInputs.cache
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\ManageFilms.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Index.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Detail.cshtml.g.cs

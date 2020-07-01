@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaApp.Domain.MediaTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,6 @@ namespace MediaApp.Domain
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
         public DateTime PublishedDate { get; set; }
-        public ICollection<MediaComment> MediaComments { get; set; }
+        public Media Media { get; set; }
     }
 }

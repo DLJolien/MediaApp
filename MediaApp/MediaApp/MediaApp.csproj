@@ -12,6 +12,10 @@
     <Compile Remove="Data\Migrations\20200623122016_NoDeleteOnStatus.Designer.cs" />
     <Compile Remove="Data\Migrations\20200625114447_ChangedMediaUserToUser.cs" />
     <Compile Remove="Data\Migrations\20200625114447_ChangedMediaUserToUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200629092614_AddedPlaylistToMedia.cs" />
+    <Compile Remove="Data\Migrations\20200629092614_AddedPlaylistToMedia.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200629092937_AddedPlaylistToMedia.cs" />
+    <Compile Remove="Data\Migrations\20200629092937_AddedPlaylistToMedia.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

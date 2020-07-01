@@ -1,0 +1,82 @@
+﻿@using MediaApp.Models.Index
+@model IEnumerable<PlaylistListViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MediaApp.Domain.User> signInManager
+
+    <div id="container">      
+            <input type="text" class="form-control" id="filter" name="filter" />
+            <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>                     
+    </div>
+
+@{if (Model.Count() == 0)
+    {
+        <br />
+        <strong>There are currently no playlist listed.</strong>
+    }
+    else
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Duration
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Creator
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PlaylistListViewModel playlist in Model)
+                {
+                    <tr onclick="GoToDetail(@playlist.Id)">
+                        <td class="info">
+                            @playlist.Title
+                        </td>
+                        <td class="info">
+                            @playlist.Duration
+                        </td>
+                        <td class="info">
+                            @playlist.PlaylistMedias.Count
+                        </td>
+                        <td class="info">
+                            @playlist.User.UserName.Split('@')[0]
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+    }
+}
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<script>
+    function GoToDetail(id) {
+        window.location.href = "Detail/?id=" + id;
+    }
+    function FilterOn() {
+        var filter = document.getElementById('filter').value
+        window.location.href = "?filter=" + filter;
+    }
+</script>
+
+<style>
+    table, td {
+        border-bottom: 1px solid black;
+    }
+
+    .info {
+        width: 20vw;
+    }
+
+    tr:hover {
+        background-color: lightgray;
+    }
+</style>

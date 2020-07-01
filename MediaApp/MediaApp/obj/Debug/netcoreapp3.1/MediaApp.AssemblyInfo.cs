@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap4")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-MediaApp-C4705F10-2A05-47A7-9330-319FDF31C984")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediaApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]

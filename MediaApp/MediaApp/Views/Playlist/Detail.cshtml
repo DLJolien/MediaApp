@@ -1,0 +1,57 @@
+﻿@model MediaApp.Models.Detail.PlaylistDetailViewModel
+
+<div class="grid-container">
+    <div class="Title">
+        @Model.Title
+    </div>
+    <div class="Creator-Label">
+        <strong>Creator</strong>
+    </div>
+    <div class="Creator-Input">
+        <p>@Model.User.UserName.Split('@')[0]</p>
+    </div>
+    <div class="Duration-Label">
+        <strong>Duration</strong>
+    </div>
+    <div class="Duration-Input">
+        <p>@Model.Duration</p>
+    </div>
+    <div class="Accessibility-Label">
+        <strong>Accessibility</strong>
+    </div>
+    <div class="Accessibility-Input">
+        @if (Model.Public == true)
+        {
+            <p>Public</p>
+        }
+        else
+        {
+            <p>Private</p>
+        }
+    </div>
+</div>
+@if (Model.PlaylistMedias.Count == 0)
+{
+    <p>This playlist is currently empty</p>
+}
+else
+{
+    <table>
+        @{
+            foreach (var media in Model.PlaylistMedias)
+            {
+                <tr>
+                    <td class="img"><img src="@media.Media.PhotoUrl" /></td>
+                    <td class="info">@media.Media.Title</td>
+                    <td class="info">@media.Media.ReleaseDate.Year</td>
+                    <td class="info">@media.Media.Duration</td>
+                </tr>
+            }
+        }        
+    </table>
+}
+    <style>
+        img {
+            max-width: 100px;
+        }
+    </style>

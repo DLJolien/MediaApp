@@ -5,105 +5,109 @@
 @if (signInManager.IsSignedIn(User))
 {
     <a asp-controller="Film" asp-action="Create">Add new film</a>
+    <a asp-controller="Playlist" asp-action ="Create" asp-route-mediaType="Film">Create playlist</a>
 }
-    <br />
-    @{if (Model.Count() == 0)
-        {
-            <br />
-            <strong>There are currently no films listed.</strong>
-        }
-        else
-        {
-            <div class="container">
-                <div class="row">
-                    @foreach (var film in Model)
-                    {
-                        <div class="col-3">
-                            <div class="item">
-                                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                    <img src="@film.PhotoUrl" />
-                                    <p>@film.Title - @film.ReleaseDate.Year</p>
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
 
-        }
+
+<br />
+@{if (Model.Count() == 0)
+    {
+        <br />
+        <strong>There are currently no films listed.</strong>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                @foreach (var film in Model)
+                {
+                    <div class="col-3">
+                        <div class="item">
+                            <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                                <img src="@film.PhotoUrl" />
+                                <p>@film.Title - @film.ReleaseDate.Year</p>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    }
+}
+
+@*@model PaginatedList<MediaApp.Domain.MediaTypes.Film>
+
+    @foreach (var film in Model)
+    {
+        <div class="col-3">
+            <div class="item">
+                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                    <img src="@film.PhotoUrl" />
+                    <p>@film.Title - @film.ReleaseDate.Year</p>
+                </a>
+            </div>
+        </div>
     }
 
-    @*@model PaginatedList<MediaApp.Domain.MediaTypes.Film>
+    @{
+        var prevDisabled = !Model.PreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.NextPage ? "disabled" : "";
+    }
 
-        @foreach (var film in Model)
-        {
-            <div class="col-3">
-                <div class="item">
-                    <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                        <img src="@film.PhotoUrl" />
-                        <p>@film.Title - @film.ReleaseDate.Year</p>
-                    </a>
-                </div>
-            </div>
+    <a asp-action="Index"
+       asp-route-pageNumber=@(Model.PageIndex - 1)
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber=@(Model.PageIndex + 1)
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>*@
+
+<body onload="Observer()">
+</body>
+
+<script>
+    var page = 1;
+    window.onscroll = function (ev) {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            //ifrm = document.createElement("IFRAME");
+            //ifrm.setAttribute("src", page + ".html");
+            //ifrm.style.width = 100 + "%";
+            //ifrm.style.height = 800 + "px";
+            //document.body.appendChild(ifrm);
+            console.log("end");
+            page++
         }
+    };
+</script>
+<style>
 
-        @{
-            var prevDisabled = !Model.PreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.NextPage ? "disabled" : "";
-        }
+    div .col-3 .item {
+        width: 100%;
+    }
 
-        <a asp-action="Index"
-           asp-route-pageNumber=@(Model.PageIndex - 1)
-           class="btn btn-default @prevDisabled">
-            Previous
-        </a>
-        <a asp-action="Index"
-           asp-route-pageNumber=@(Model.PageIndex + 1)
-           class="btn btn-default @nextDisabled">
-            Next
-        </a>*@
-
-<body onload="Observer()"> </body>
-
-    <script>
-        var page = 1;
-        window.onscroll = function (ev) {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                //ifrm = document.createElement("IFRAME");
-                //ifrm.setAttribute("src", page + ".html");
-                //ifrm.style.width = 100 + "%";
-                //ifrm.style.height = 800 + "px";
-                //document.body.appendChild(ifrm);
-                console.log("end");
-                page++
-            }
-        };
-    </script>
-    <style>
-
-        div .col-3 .item {
-            width: 100%;
-        }
-
-            div .col-3 .item a {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                color: black;
-            }
-
-        div .col-3 {
+        div .col-3 .item a {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            color: black;
         }
 
-        img {
-            width: 100%;
-            height: 280px;
-        }
+    div .col-3 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-        .col-3 {
-            border: solid 1px;
-        }
-    </style>
+    img {
+        width: 100%;
+        height: 280px;
+    }
+
+    .col-3 {
+        border: solid 1px;
+    }
+</style>
