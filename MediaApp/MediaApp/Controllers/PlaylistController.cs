@@ -230,7 +230,6 @@ namespace MediaApp.Controllers
             }
             return View(vm);
         }
-
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
@@ -244,7 +243,6 @@ namespace MediaApp.Controllers
             return View(vm);
         }
         [Authorize]
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> ConfirmDelete(int id)
         {
@@ -290,6 +288,45 @@ namespace MediaApp.Controllers
             {
                 return LocalRedirect("/Identity/Account/AccessDenied");
             }
+        }
+        [HttpPost]
+        public async Task SaveFilmToBookmarks(int id)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (user.BookmarkedFilmsId == 0)
+            {
+                Playlist<Media> newBookmarkedFilmsList = new Playlist<Media>()
+                {
+                    Title = "Bookmarked films",
+                    Public = false,
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                };
+                _dbContext.Playlists.Add(newBookmarkedFilmsList);
+                await _dbContext.SaveChangesAsync();
+
+                user.BookmarkedFilmsId = await _dbContext.Playlists.Where(x => x.Title == "Bookmarked films").Select(x => x.Id).FirstOrDefaultAsync();
+            }
+
+            Playlist<Media> bookmarkedFilms = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedFilmsId).FirstOrDefault();
+
+            if (!await _dbContext.PlaylistMedias.AnyAsync(x => x.MediaId == id && x.PlaylistId == bookmarkedFilms.Id))
+            {
+                _dbContext.PlaylistMedias.Add(new PlaylistMedia() { MediaId = id, PlaylistId = bookmarkedFilms.Id });
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+        public async Task RemoveFilmFromBookmarks(int id)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            Playlist<Media> bookmarkedFilms = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedFilmsId).FirstOrDefault();
+
+            PlaylistMedia playlistMedia = await _dbContext.PlaylistMedias.Where(x => x.MediaId == id && x.PlaylistId == bookmarkedFilms.Id).FirstOrDefaultAsync();
+
+            _dbContext.PlaylistMedias.Remove(playlistMedia);
+            await _dbContext.SaveChangesAsync();
+
         }
     }
 }

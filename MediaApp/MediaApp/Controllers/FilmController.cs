@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using MediaApp.Areas.Identity.Pages.Account;
+using MediaApp.Data.Migrations;
 using MediaApp.Domain;
 using MediaApp.Domain.MediaTypes;
 using MediaApp.Models;
@@ -32,6 +33,8 @@ namespace MediaApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             IEnumerable<Film> films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderByDescending(film => film.ReleaseDate).ToListAsync();
 
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
@@ -56,8 +59,11 @@ namespace MediaApp.Controllers
                     ReleaseDate = film.ReleaseDate,
                     PhotoUrl = film.PhotoUrl,
                     Genre = film.Genre.Description,
-
-                };
+                };               
+                if (await _dbContext.PlaylistMedias.AnyAsync(x => x.MediaId == film.Id && x.PlaylistId == user.BookmarkedFilmsId))
+                {
+                    vm.Bookmarked = true;
+                }
                 vmList.Add(vm);
             }
             return View(vmList);

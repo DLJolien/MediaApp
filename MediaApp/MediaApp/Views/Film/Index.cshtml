@@ -23,10 +23,18 @@
                 {
                     <div class="col-3">
                         <div class="item">
+                            @if (film.Bookmarked)
+                            {
+                                <p id="@film.Id" class="red-heart" name="heart"><i onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                            }
+                            else
+                            {
+                                <p id="@film.Id" class="grey-heart" name="heart"><i onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                            }
                             <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
                                 <img src="@film.PhotoUrl" />
-                                <p>@film.Title - @film.ReleaseDate.Year</p>
                             </a>
+                            <p>@film.Title - @film.ReleaseDate.Year</p>
                         </div>
                     </div>
                 }
@@ -82,8 +90,48 @@
             page++
         }
     };
+    window.onload = function () {
+        var hearts = document.getElementsByName("heart");
+        console.log(hearts);
+        for (var i = 0; i < hearts.length; i++) {
+            hearts[i].style.visibility = "hidden";
+        }
+
+        console.log("hidden");
+    }
+    function AddFilmToBookmark(id) {
+        $.post("/Playlist/SaveFilmToBookmarks", { id: id }, function () {
+            console.log("addedtobookmarks" + id);
+        });
+        var heart = document.getElementById(id);
+        heart.style.color = "red";
+        heart.onclick = "RemoveFilmFromBookmark(id)";
+    }
+    function RemoveFilmFromBookmark(id) {
+        $.post("/Playlist/RemoveFilmFromBookmarks", { id: id }, function () {
+            console.log("removedfrombookmarks" + id);
+        });
+        var heart = document.getElementById(id);
+        heart.style.color = "grey";
+        heart.onclick = "AddFilmToBookmark(id)";
+
+    }
 </script>
 <style>
+    .container .row .col-3:hover p.red-heart {
+        color: red;
+        visibility: visible !important;
+        cursor: pointer;
+    }
+    .container .row .col-3:hover p.grey-heart {
+        color: grey;
+        visibility: visible !important;
+        cursor: pointer;
+    }
+
+/*    .container .row .col-3:hover {
+        background-color: grey;
+    }*/
 
     div .col-3 .item {
         width: 100%;
