@@ -28,7 +28,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @{if (User.IsInRole("Admin"))
+                        @{ if (!signInManager.IsSignedIn(User))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Film" asp-action="Index">Films</a>
@@ -36,11 +36,21 @@
                             }
                             else if (signInManager.IsSignedIn(User))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Film" asp-action="Index">My films</a>
-                                </li>
-                                }
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Films
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" onclick="RedirectToFilmOverview()">Overview films</a>
+                                        <a class="dropdown-item" href="#">My Bookmarks <i class="fas fa-heart"></i> </a>
+                                        <a class="dropdown-item" onclick="RedirectToFilmCreate()">Create film</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="RedirectToPlaylistOverview()">Overview film playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToPlaylistCreate()">Create film playlist</a>
+                                    </div>
+                                </div>
                             }
+                        }
                     </ul>
                 </div>
             </div>
@@ -57,10 +67,30 @@
             &copy; 2020 - MediaApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+        function RedirectToFilmOverview() {
+            window.location.href = "/Film/Index"
+        }
+        function RedirectToFilmCreate() {
+            window.location.href = "/Film/Create"
+        }
+        function RedirectToPlaylistCreate() {
+            window.location.href = "/Playlist/Create/?mediaType=Film"
+        }
+        function RedirectToPlaylistOverview() {
+            window.location.href = "/Playlist/Index"
+        }
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/qrcode.js" ></script>
+    <script src="~/lib/qrcode.js"></script>
+    <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+<style>
+    .dropdown-item:hover{
+        cursor: pointer;
+    }
+</style>

@@ -39,7 +39,7 @@ namespace MediaApp.Controllers
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 films = films.Where(film => film.UserId == userId || film.Accessibility == "Public");
             }
-            else if(!_signInManager.IsSignedIn(User))
+            else if (!_signInManager.IsSignedIn(User))
             {
                 films = films.Where(film => film.Accessibility == "Public");
             }
@@ -194,22 +194,22 @@ namespace MediaApp.Controllers
             {
 
                 changedFilm.Title = vm.Title;
-            changedFilm.StatusId = vm.SelectedStatusId;
-            changedFilm.ReleaseDate = vm.ReleaseDate;
-            changedFilm.Director = vm.Director;
-            changedFilm.GenreId = vm.SelectedGenreId;
-            changedFilm.Duration = vm.Duration;
-            changedFilm.ContentUrl = vm.ContentUrl;
-            changedFilm.Accessibility = vm.Public;
+                changedFilm.StatusId = vm.SelectedStatusId;
+                changedFilm.ReleaseDate = vm.ReleaseDate;
+                changedFilm.Director = vm.Director;
+                changedFilm.GenreId = vm.SelectedGenreId;
+                changedFilm.Duration = vm.Duration;
+                changedFilm.ContentUrl = vm.ContentUrl;
+                changedFilm.Accessibility = vm.Public;
 
-            if (vm.Photo != null)
-            {
-                _photoService.DeletePicture(changedFilm.PhotoUrl);
-                string uniqueFileName = _photoService.UploadPicture(vm.Photo);
-                changedFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
-            }
-            _dbContext.Films.Update(changedFilm);
-            await _dbContext.SaveChangesAsync();
+                if (vm.Photo != null)
+                {
+                    _photoService.DeletePicture(changedFilm.PhotoUrl);
+                    string uniqueFileName = _photoService.UploadPicture(vm.Photo);
+                    changedFilm.PhotoUrl = "/ug-media-pics/" + uniqueFileName;
+                }
+                _dbContext.Films.Update(changedFilm);
+                await _dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Detail", new { Id = vm.Id });
         }
@@ -243,7 +243,7 @@ namespace MediaApp.Controllers
             {
                 _photoService.DeletePicture(filmToDelete.PhotoUrl);
                 _dbContext.Films.Remove(filmToDelete);
-            await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
             }
 
             return (RedirectToAction("Index"));
