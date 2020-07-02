@@ -15,5 +15,6 @@ namespace MediaApp.Models.Detail
         public List<PlaylistMedia> PlaylistMedias { get; set; } = new List<PlaylistMedia>();
         public User User { get; set; }
         public TimeSpan Duration { get; set; }
+        public DateTime LastModified { get; set; }
     }
 }

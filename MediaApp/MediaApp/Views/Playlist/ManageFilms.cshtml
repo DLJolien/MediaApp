@@ -1,8 +1,8 @@
 ﻿@model MediaApp.Models.Create.PlaylistAddFilmViewModel
 
-<h1>Now let's add some films to your playlist...</h1>
+<h1>Add or remove films from your playlist...</h1>
 
-<button onclick="window.location.href='/playlist/index'">
+<button onclick="Redirect()">
         @if (@Model.AlreadyIncluded.Count == 0)
         {
             <p>Continue without adding</p>
@@ -46,14 +46,10 @@
 </div>
 <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
 <script>
-    function addToPlaylist(mediaId) {
-
-        location.reload();
+    function Redirect() {
+        window.location.href='/playlist/index'
     }
-    function removeFromPlaylist(mediaId) {
 
-        location.reload();
-    }
 </script>
 <style>
     tr {

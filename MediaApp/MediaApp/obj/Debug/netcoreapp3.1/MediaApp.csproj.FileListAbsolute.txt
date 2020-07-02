@@ -201,3 +201,4 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Index.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Detail.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Delete.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Edit.cshtml.g.cs

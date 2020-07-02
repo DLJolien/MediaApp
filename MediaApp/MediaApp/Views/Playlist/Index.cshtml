@@ -62,12 +62,13 @@
                                     </button>
 
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        @if(userManager.GetUserId(User) == @playlist.User.Id || User.IsInRole("Admin"))
-                                            {
-                                                <a class="dropdown-item" onclick="GoToEdit(@playlist.Id)">Edit</a>
-                                                <a class="dropdown-item" onclick="GoToDelete(@playlist.Id)">Delete</a>
-                                            }
-                                        
+                                        @if (userManager.GetUserId(User) == @playlist.User.Id || User.IsInRole("Admin"))
+                                        {
+                                            <a class="dropdown-item" onclick="GoToEdit(@playlist.Id)">Edit info</a>
+                                            <a class="dropdown-item" onclick="GoToManageFilms(@playlist.Id)">Edit items</a>
+                                            <a class="dropdown-item" onclick="GoToDelete(@playlist.Id)">Delete</a>
+                                        }
+
                                         <a class="dropdown-item" onclick="GoToDetail(@playlist.Id)">View details</a>
                                     </div>
                                 </div>
@@ -85,6 +86,9 @@
 <script>
     function GoToDetail(id) {
         window.location.href = "Detail/?id=" + id;
+    }
+    function GoToManageFilms(id) {
+        window.location.href = "ManageFilms/?id=" + id;
     }
     function FilterOn() {
         var filter = document.getElementById('filter').value

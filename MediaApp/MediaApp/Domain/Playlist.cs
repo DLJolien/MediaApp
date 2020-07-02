@@ -15,6 +15,7 @@ namespace MediaApp.Domain
         public string UserId { get; set; }
         public User User { get; set; }
         public TimeSpan Duration { get; set; }
+        public DateTime LastModified { get; set; }
     }
 }
 

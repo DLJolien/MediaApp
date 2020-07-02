@@ -1,0 +1,41 @@
+﻿@model MediaApp.Models.Edit.PlaylistEditViewModel
+
+<h1>Edit playlist...</h1>
+
+<form asp-controller="Playlist" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    <div id="basic-info">
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" />
+            <span class="text-danger" asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group">
+            @Html.RadioButtonFor(m => m.Public, "true") <span>Public</span>
+            @Html.RadioButtonFor(m => m.Public, "false") <span>Private</span>
+        </div>
+        <div class="form-group">
+            <button class="btn-success" type="submit">Save changes</button>
+        </div>
+    </div>
+</form>
+
+<style>
+    <style >
+    body > div.container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    #basic-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        font-size: 18px;
+    }
+
+
+    #Title {
+        width: 70%;
+    }
+</style>
