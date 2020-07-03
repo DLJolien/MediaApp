@@ -31,41 +31,64 @@ namespace MediaApp.Controllers
             _signInManager = signInManager;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterTitle = "", string filterGenre = "Choose a genre")
         {
             User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            IEnumerable<Film> films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).OrderByDescending(film => film.ReleaseDate).ToListAsync();
+            IEnumerable<Film> films;            
 
-            if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
+            if (!_signInManager.IsSignedIn(User))
             {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                films = films.Where(film => film.UserId == userId || film.Accessibility == "Public");
+                films = await _dbContext.Films
+                                        .Include(x => x.Status)
+                                        .Include(x => x.Genre)
+                                        .OrderByDescending(film => film.ReleaseDate)
+                                        .Where(film => film.Accessibility == "Public")
+                                        .ToListAsync();
             }
-            else if (!_signInManager.IsSignedIn(User))
+            else if (User.IsInRole("Admin"))
             {
-                films = films.Where(film => film.Accessibility == "Public");
+                films = await _dbContext.Films
+                                        .Include(x => x.Status)
+                                        .Include(x => x.Genre)
+                                        .OrderByDescending(film => film.ReleaseDate)
+                                        .ToListAsync();
+            }
+            else
+            {
+                films = await _dbContext.Films
+                                        .Include(x => x.Status)
+                                        .Include(x => x.Genre)
+                                        .OrderByDescending(film => film.ReleaseDate)
+                                        .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Accessibility == "Public")
+                                        .ToListAsync();
             }
 
-            List<MediaListViewModel> vmList = new List<MediaListViewModel>();
-
-            foreach (var film in films)
+            if(!String.IsNullOrEmpty(filterTitle) && filterGenre == "Choose a genre")
             {
-                MediaListViewModel vm = new MediaListViewModel()
-                {
-                    Id = film.Id,
-                    Title = film.Title,
-                    Status = film.Status.Description,
-                    ReleaseDate = film.ReleaseDate,
-                    PhotoUrl = film.PhotoUrl,
-                    Genre = film.Genre.Description,
-                };               
-                if (await _dbContext.PlaylistMedias.AnyAsync(x => x.MediaId == film.Id && x.PlaylistId == user.BookmarkedFilmsId))
-                {
-                    vm.Bookmarked = true;
-                }
-                vmList.Add(vm);
+                films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower())).ToList();                   
             }
+            else if (String.IsNullOrEmpty(filterTitle) && filterGenre != "Choose a genre")
+            {
+                films = films.Where(x => x.Genre.Description == filterGenre).ToList();
+            }
+            else if(!String.IsNullOrEmpty(filterTitle) && filterGenre != "Choose a genre")
+            {
+                films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower()) && x.Genre.Description == filterGenre).ToList();
+            }
+
+            List<MediaListViewModel> vmList = films.Select(x => new MediaListViewModel()
+             {
+                 Id = x.Id,
+                 Title = x.Title,
+                 Status = x.Status.Description,
+                 ReleaseDate = x.ReleaseDate,
+                 Genre = x.Genre.Description,
+                 Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
+                 PhotoUrl = x.PhotoUrl,
+             }).ToList();
+
+                
             return View(vmList);
         }
         [AllowAnonymous]
@@ -129,19 +152,11 @@ namespace MediaApp.Controllers
                     GenreId = vm.SelectedGenreId,
                     Duration = vm.Duration,
                     Accessibility = vm.Public,
-                    UserId = userId
+                    UserId = userId, 
+                    ContentUrl = vm.ContentUrl
 
 
                 };
-                if (!String.IsNullOrEmpty(vm.ContentUrl))
-                {
-                    newFilm.ContentUrl = vm.ContentUrl;
-                }
-                else
-                {
-                    string query = newFilm.Title.Replace(' ', '+');
-                    newFilm.ContentUrl = "https://www.youtube.com/results?search_query=" + query;
-                }
 
                 if (vm.Photo != null)
                 {

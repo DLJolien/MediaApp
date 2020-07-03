@@ -1,4 +1,5 @@
 ﻿using MediaApp.Domain.MediaTypes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace MediaApp.Models
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string PhotoUrl { get; set; }
-        public string Status { get; set; }
         public string Genre { get; set; }
+        public string Status { get; set; }
         public bool Bookmarked { get; set; } = false;
 
     }

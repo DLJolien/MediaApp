@@ -2,14 +2,23 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-@if (signInManager.IsSignedIn(User))
-{
-    <a asp-controller="Film" asp-action="Create">Add new film</a>
-    <a asp-controller="Playlist" asp-action ="Create" asp-route-mediaType="Film">Create playlist</a>
-}
+    <div id="container">
+        <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+        @{
+            var genres = Model.Select(x => x.Genre).Distinct();
+        }
+        <select id="selectionGenres">
+            <option selected>Choose a genre</option>
+            @foreach (var genre in genres)
+            {
+                <option>@genre</option>
+            }
+        </select>
+        <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+        <button onclick="ClearFilter()" id="btn-clear" class="btn btn-primary">Remove filter</button>
+    </div>
 
 
-<br />
 @{if (Model.Count() == 0)
     {
         <br />
@@ -43,53 +52,8 @@
 
     }
 }
-
-@*@model PaginatedList<MediaApp.Domain.MediaTypes.Film>
-
-    @foreach (var film in Model)
-    {
-        <div class="col-3">
-            <div class="item">
-                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                    <img src="@film.PhotoUrl" />
-                    <p>@film.Title - @film.ReleaseDate.Year</p>
-                </a>
-            </div>
-        </div>
-    }
-
-    @{
-        var prevDisabled = !Model.PreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.NextPage ? "disabled" : "";
-    }
-
-    <a asp-action="Index"
-       asp-route-pageNumber=@(Model.PageIndex - 1)
-       class="btn btn-default @prevDisabled">
-        Previous
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber=@(Model.PageIndex + 1)
-       class="btn btn-default @nextDisabled">
-        Next
-    </a>*@
-
-<body onload="Observer()">
-</body>
-
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
 <script>
-    var page = 1;
-    window.onscroll = function (ev) {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-            //ifrm = document.createElement("IFRAME");
-            //ifrm.setAttribute("src", page + ".html");
-            //ifrm.style.width = 100 + "%";
-            //ifrm.style.height = 800 + "px";
-            //document.body.appendChild(ifrm);
-            console.log("end");
-            page++
-        }
-    };
     window.onload = function () {
         var hearts = document.getElementsByName("heart");
         console.log(hearts);
@@ -114,7 +78,15 @@
         var heart = document.getElementById(id);
         heart.style.color = "grey";
         heart.onclick = "AddFilmToBookmark(id)";
-
+    }
+    function FilterOn() {
+        var filterTitle = document.getElementById('filter').value
+        var e = document.getElementById("selectionGenres");
+        var filterGenre = e.options[e.selectedIndex].text;
+        window.location.href = "?filterTitle=" + filterTitle + "&filterGenre=" + filterGenre;
+    }
+    function ClearFilter() {
+        window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
     }
 </script>
 <style>
@@ -128,10 +100,6 @@
         visibility: visible !important;
         cursor: pointer;
     }
-
-/*    .container .row .col-3:hover {
-        background-color: grey;
-    }*/
 
     div .col-3 .item {
         width: 100%;
