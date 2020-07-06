@@ -4,14 +4,16 @@ using MediaApp.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MediaApp.Data.Migrations
 {
     [DbContext(typeof(MediaDb))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200706111557_RemovedMediaSeensTable")]
+    partial class RemovedMediaSeensTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,21 +133,6 @@ namespace MediaApp.Data.Migrations
                     b.ToTable("Media");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Media");
-                });
-
-            modelBuilder.Entity("MediaApp.Domain.MediaTypes.MediaSeen", b =>
-                {
-                    b.Property<int>("MediaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("MediaId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("MediaSeens");
                 });
 
             modelBuilder.Entity("MediaApp.Domain.MediaTypes.PlaylistMedia", b =>
@@ -418,16 +405,16 @@ namespace MediaApp.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             BookmarkedFilmsId = 0,
-                            ConcurrencyStamp = "53b314cd-91ff-4f37-aba3-4e6305a7f114",
+                            ConcurrencyStamp = "1c08c666-5894-408a-837c-e31d6c6e7dc4",
                             Email = "admin@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin@email.com",
-                            PasswordHash = "AP+8Ll2uLLWr67Bd62cfEYkrUgiVP4ZKpeO/1daeN54O03igLMfDUjtPwhgklFJT/w==",
+                            PasswordHash = "AC2lzbNUHCJubf1iZkMVFPPJ5PtmQKn20g5gFINtuZ6tHrYKwZ3cORH564xfV6hApw==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/admin.png",
-                            SecurityStamp = "e661d002-ef45-4721-9875-c5d6d6a6da9f",
+                            SecurityStamp = "cf5227e1-cf37-4850-97ca-3aff2377c0a4",
                             TwoFactorEnabled = false,
                             UserName = "admin@email.com"
                         },
@@ -436,16 +423,16 @@ namespace MediaApp.Data.Migrations
                             Id = "2",
                             AccessFailedCount = 0,
                             BookmarkedFilmsId = 0,
-                            ConcurrencyStamp = "9560d4c2-275f-41d8-b4b3-1e0ed65706fe",
+                            ConcurrencyStamp = "c1cc3296-77c8-45b6-b8d1-92761a6d4f2a",
                             Email = "user@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "user@email.com",
                             NormalizedUserName = "user@email.com",
-                            PasswordHash = "AFlet1MC04wYzS2u0ymWa/CEK7zRklnJS+pzTr91PcSEQy4PkHgpSh0anpwhR9Hvxw==",
+                            PasswordHash = "AIN7el2ZhxR9nILFdeWoLGTeQqZCUeoXOzVY1v6jXLSFQIZVQMHiacW22Ig9MrotSQ==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/user.png",
-                            SecurityStamp = "df026fd5-2fe9-441e-b865-1a2ee1cc4443",
+                            SecurityStamp = "442d9068-e509-47a0-a608-ee05330430fa",
                             TwoFactorEnabled = false,
                             UserName = "user@email.com"
                         });
@@ -481,14 +468,14 @@ namespace MediaApp.Data.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "387bb216-768b-450d-97a5-e9b2dccdda9e",
+                            ConcurrencyStamp = "2db0aacf-7f3d-4ccf-bfba-1dbf3eee71cc",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "a8da3d34-8e77-464a-be77-68d5ee63977f",
+                            ConcurrencyStamp = "3cc50a1d-fec0-4172-a994-b1d622271a11",
                             Name = "User",
                             NormalizedName = "User"
                         });
@@ -700,21 +687,6 @@ namespace MediaApp.Data.Migrations
                     b.HasOne("MediaApp.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("MediaApp.Domain.MediaTypes.MediaSeen", b =>
-                {
-                    b.HasOne("MediaApp.Domain.MediaTypes.Media", "Media")
-                        .WithMany()
-                        .HasForeignKey("MediaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MediaApp.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MediaApp.Domain.MediaTypes.PlaylistMedia", b =>

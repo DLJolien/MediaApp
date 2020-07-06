@@ -4,14 +4,16 @@ using MediaApp.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MediaApp.Data.Migrations
 {
     [DbContext(typeof(MediaDb))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200706075954_AddedConnectionToMediaSeen")]
+    partial class AddedConnectionToMediaSeen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,6 +101,9 @@ namespace MediaApp.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Accessibility")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ContentUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -111,9 +116,6 @@ namespace MediaApp.Data.Migrations
 
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Public")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
@@ -138,14 +140,20 @@ namespace MediaApp.Data.Migrations
                     b.Property<int>("MediaId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Seen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MediaId", "UserId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
-                    b.ToTable("MediaSeens");
+                    b.ToTable("MediaSeen");
                 });
 
             modelBuilder.Entity("MediaApp.Domain.MediaTypes.PlaylistMedia", b =>
@@ -418,16 +426,16 @@ namespace MediaApp.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             BookmarkedFilmsId = 0,
-                            ConcurrencyStamp = "53b314cd-91ff-4f37-aba3-4e6305a7f114",
+                            ConcurrencyStamp = "e995c1f9-51ac-45b6-a3fa-6cf2b08daff8",
                             Email = "admin@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@email.com",
                             NormalizedUserName = "admin@email.com",
-                            PasswordHash = "AP+8Ll2uLLWr67Bd62cfEYkrUgiVP4ZKpeO/1daeN54O03igLMfDUjtPwhgklFJT/w==",
+                            PasswordHash = "AHLeoOPvvfYXK8sDvm+363wLpxovf2Ob6qvVkqpl/MIbeWTCPMzv4w4DPX6roFqenA==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/admin.png",
-                            SecurityStamp = "e661d002-ef45-4721-9875-c5d6d6a6da9f",
+                            SecurityStamp = "47676c7c-4b32-46a3-8673-583f26316ddd",
                             TwoFactorEnabled = false,
                             UserName = "admin@email.com"
                         },
@@ -436,16 +444,16 @@ namespace MediaApp.Data.Migrations
                             Id = "2",
                             AccessFailedCount = 0,
                             BookmarkedFilmsId = 0,
-                            ConcurrencyStamp = "9560d4c2-275f-41d8-b4b3-1e0ed65706fe",
+                            ConcurrencyStamp = "10e74ee0-127e-4ee9-a2ab-9e55ac4c0f3b",
                             Email = "user@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "user@email.com",
                             NormalizedUserName = "user@email.com",
-                            PasswordHash = "AFlet1MC04wYzS2u0ymWa/CEK7zRklnJS+pzTr91PcSEQy4PkHgpSh0anpwhR9Hvxw==",
+                            PasswordHash = "AHkZndEnu+NC0yc/bVzR9E+Za6d7+GVMCIZNb8TOfPVsWBb2C3F/Z5x0JiBJGM7+yQ==",
                             PhoneNumberConfirmed = false,
                             PhotoUrl = "/users/user.png",
-                            SecurityStamp = "df026fd5-2fe9-441e-b865-1a2ee1cc4443",
+                            SecurityStamp = "729518b6-e51c-4209-a4da-bfaf03acf7f4",
                             TwoFactorEnabled = false,
                             UserName = "user@email.com"
                         });
@@ -481,14 +489,14 @@ namespace MediaApp.Data.Migrations
                         new
                         {
                             Id = "1",
-                            ConcurrencyStamp = "387bb216-768b-450d-97a5-e9b2dccdda9e",
+                            ConcurrencyStamp = "42543fa3-a0fd-4c79-bd7a-9804409adc81",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = "2",
-                            ConcurrencyStamp = "a8da3d34-8e77-464a-be77-68d5ee63977f",
+                            ConcurrencyStamp = "c8704e5d-a298-4213-a09b-b39e8138681c",
                             Name = "User",
                             NormalizedName = "User"
                         });
@@ -712,9 +720,7 @@ namespace MediaApp.Data.Migrations
 
                     b.HasOne("MediaApp.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("MediaApp.Domain.MediaTypes.PlaylistMedia", b =>

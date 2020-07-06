@@ -14,7 +14,7 @@ namespace MediaApp.Models
         public string PhotoUrl { get; set; }
         public string Genre { get; set; }
         public string ContentUrl { get; set; }
-        public string Accessibility { get; set; }
+        public bool Public { get; set; }
 
     }
 }

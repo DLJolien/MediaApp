@@ -2,21 +2,21 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-    <div id="container">
-        <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
-        @{
-            var genres = Model.Select(x => x.Genre).Distinct();
+<div id="container">
+    <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+    @{
+        var genres = Model.Select(x => x.Genre).Distinct();
+    }
+    <select id="selectionGenres">
+        <option selected>Choose a genre</option>
+        @foreach (var genre in genres)
+        {
+            <option>@genre</option>
         }
-        <select id="selectionGenres">
-            <option selected>Choose a genre</option>
-            @foreach (var genre in genres)
-            {
-                <option>@genre</option>
-            }
-        </select>
-        <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
-        <button onclick="ClearFilter()" id="btn-clear" class="btn btn-primary">Remove filter</button>
-    </div>
+    </select>
+    <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+    <button onclick="ClearFilter()" id="btn-clear" class="btn btn-primary">Remove filter</button>
+</div>
 
 
 @{if (Model.Count() == 0)
@@ -30,15 +30,25 @@
             <div class="row">
                 @foreach (var film in Model)
                 {
-                    <div class="col-3">
+
+                    <div id="div-@film.Id" class="col-3" name = "@film.Seen">
                         <div class="item">
-                            @if (film.Bookmarked)
+                            @if (film.Seen)
                             {
-                                <p id="@film.Id" class="red-heart" name="heart"><i onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                <p id="seen-@film.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye-slash"></i></p>
                             }
                             else
                             {
-                                <p id="@film.Id" class="grey-heart" name="heart"><i onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                <p id="seen-@film.Id" name="eye" class="eye" onclick="AddToSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye"></i></p>
+                            }
+
+                            @if (film.Bookmarked)
+                            {
+                                <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id"onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                            }
+                            else
+                            {
+                                <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id"onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
                             }
                             <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
                                 <img src="@film.PhotoUrl" />
@@ -57,11 +67,23 @@
     window.onload = function () {
         var hearts = document.getElementsByName("heart");
         console.log(hearts);
+        var eyes = document.getElementsByName("eye");
+        console.log(eyes);
         for (var i = 0; i < hearts.length; i++) {
             hearts[i].style.visibility = "hidden";
+            eyes[i].style.visibility = "hidden";
         }
-
         console.log("hidden");
+        var divs = document.getElementsByName("name");
+        divs.forEach(x => x.style.backgroundColor = "grey");
+    }
+    function ChangeBackgroundColor(bool, id) {
+        if (bool) {
+            var div = document.getElementById("div-" + id);
+            div.style.backgroundColor = "grey";
+            console.log("grey background for film " + id);
+        }
+        console.log("opened function");
     }
     function AddFilmToBookmark(id) {
         $.post("/Playlist/SaveFilmToBookmarks", { id: id }, function () {
@@ -69,15 +91,19 @@
         });
         var heart = document.getElementById(id);
         heart.style.color = "red";
-        heart.onclick = "RemoveFilmFromBookmark(id)";
+        var icon = document.getElementById("icon-heart-" + id);
+        icon.onclick = function () { RemoveFilmFromBookmark(id) };
+        console.log(icon);
     }
     function RemoveFilmFromBookmark(id) {
         $.post("/Playlist/RemoveFilmFromBookmarks", { id: id }, function () {
             console.log("removedfrombookmarks" + id);
         });
         var heart = document.getElementById(id);
-        heart.style.color = "grey";
-        heart.onclick = "AddFilmToBookmark(id)";
+        heart.style.color = "black";
+        var icon = document.getElementById("icon-heart-" + id);
+        icon.onclick = function () { AddFilmToBookmark(id) };
+        console.log(icon);
     }
     function FilterOn() {
         var filterTitle = document.getElementById('filter').value
@@ -88,6 +114,30 @@
     function ClearFilter() {
         window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
     }
+    function RemoveFromSeen(id) {
+        $.post("/Film/RemoveFromSeen", { id: id }, function () {
+            console.log("removedfromseen" + id);
+        });
+        var seen = document.getElementById("seen-" + id);
+        seen.onclick = function () { AddToSeen(id) };
+        var icon = document.getElementById("icon-" + id);
+        icon.className = "far fa-eye";
+        var div = document.getElementById("div-" + id);
+        div.style.backgroundColor = "transparant";
+
+
+    }
+    function AddToSeen(id) {
+        $.post("/Film/AddToSeen", { id: id }, function () {
+            console.log("addedtoseen" + id);
+        });
+        var seen = document.getElementById("seen-" + id);
+        seen.onclick = function () { RemoveFromSeen(id) };
+        var icon = document.getElementById("icon-" + id);
+        icon.className = "far fa-eye-slash";
+        var div = document.getElementById("div-" + id);
+        div.style.backgroundColor = "grey";
+    }
 </script>
 <style>
     .container .row .col-3:hover p.red-heart {
@@ -95,8 +145,21 @@
         visibility: visible !important;
         cursor: pointer;
     }
+
     .container .row .col-3:hover p.grey-heart {
-        color: grey;
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
+
+    .container .row .col-3:hover p.eye {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
+
+    .container .row .col-3:hover p.slashed-eye {
+        color: black;
         visibility: visible !important;
         cursor: pointer;
     }

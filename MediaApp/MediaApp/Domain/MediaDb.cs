@@ -102,7 +102,7 @@ namespace MediaApp.Domain
                 
             );
 
-            modelBuilder.Entity<MediaSeen>().HasKey(ms => new {ms.MediaId, ms.UserId });
+            modelBuilder.Entity<MediaSeen>().HasKey(ms => new {ms.MediaId, ms.UserId});
 
             modelBuilder.Entity<PlaylistMedia>().HasKey(pm => new { pm.MediaId, pm.PlaylistId });
 
@@ -123,6 +123,7 @@ namespace MediaApp.Domain
 
         }
         public DbSet<Media> Media { get; set; }
+        public DbSet<MediaSeen> MediaSeens { get; set; }
         public DbSet<Film> Films{ get; set; }
         public DbSet<Music> Music { get; set; }
         public DbSet<Podcast> Podcasts { get; set; }

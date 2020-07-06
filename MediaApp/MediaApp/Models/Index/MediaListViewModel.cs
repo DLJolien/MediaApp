@@ -15,6 +15,7 @@ namespace MediaApp.Models
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string PhotoUrl { get; set; }
+        public bool Seen { get; set; } = false;
         public string Genre { get; set; }
         public string Status { get; set; }
         public bool Bookmarked { get; set; } = false;

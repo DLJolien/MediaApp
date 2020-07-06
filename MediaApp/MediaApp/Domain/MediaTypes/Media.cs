@@ -13,7 +13,7 @@ namespace MediaApp.Domain.MediaTypes
         public TimeSpan Duration { get; set; }
         public string PhotoUrl { get; set; }
         public string ContentUrl { get; set; }
-        public string Accessibility { get; set; }
+        public bool Public { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
 

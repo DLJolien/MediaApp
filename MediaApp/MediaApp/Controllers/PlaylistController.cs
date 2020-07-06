@@ -141,11 +141,11 @@ namespace MediaApp.Controllers
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                films = films.Where(film => film.UserId == userId || film.Accessibility == "Public");
+                films = films.Where(film => film.UserId == userId || film.Public == true);
             }
             else if (!_signInManager.IsSignedIn(User))
             {
-                films = films.Where(film => film.Accessibility == "Public");
+                films = films.Where(film => film.Public == true);
             }
 
             vm.AllFilmsInLibrary.AddRange(films);
@@ -177,11 +177,11 @@ namespace MediaApp.Controllers
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
             {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                films = films.Where(film => film.UserId == userId || film.Accessibility == "Public");
+                films = films.Where(film => film.UserId == userId || film.Public == true);
             }
             else if (!_signInManager.IsSignedIn(User))
             {
-                films = films.Where(film => film.Accessibility == "Public");
+                films = films.Where(film => film.Public == true);
             }
 
             var alreadyInPlaylist = await _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == playlistId).ToListAsync();

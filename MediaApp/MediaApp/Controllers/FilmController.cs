@@ -31,60 +31,83 @@ namespace MediaApp.Controllers
             _signInManager = signInManager;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string filterTitle = "", string filterGenre = "Choose a genre")
+        public async Task<IActionResult> Index(string filterTitle = "", string filterGenre = "Choose a genre", bool seeBookmarkedOnly = false)
         {
             User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            IEnumerable<Film> films;            
+            IEnumerable<Film> films;
 
             if (!_signInManager.IsSignedIn(User))
             {
                 films = await _dbContext.Films
-                                        .Include(x => x.Genre)
-                                        .OrderByDescending(film => film.ReleaseDate)
-                                        .Where(film => film.Accessibility == "Public")
-                                        .ToListAsync();
+                    .Include(x => x.Genre)
+                    .OrderByDescending(film => film.ReleaseDate)
+                    .Where(film => film.Public == true)
+                    .ToListAsync();
+
             }
             else if (User.IsInRole("Admin"))
             {
-                films = await _dbContext.Films
-                                        .Include(x => x.Genre)
-                                        .OrderByDescending(film => film.ReleaseDate)
-                                        .ToListAsync();
+                if (seeBookmarkedOnly)
+                {
+                    films = await _dbContext.Films
+                        .Include(x => x.Genre)
+                        .OrderByDescending(film => film.ReleaseDate)
+                        .ToListAsync();
+                }
+                else
+                {
+                    films = await _dbContext.Films
+                        .Include(x => x.Genre)
+                        .OrderByDescending(film => film.ReleaseDate)
+                        .ToListAsync();
+                }
             }
             else
             {
-                films = await _dbContext.Films
-                                        .Include(x => x.Genre)
-                                        .OrderByDescending(film => film.ReleaseDate)
-                                        .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Accessibility == "Public")
-                                        .ToListAsync();
+                if (seeBookmarkedOnly)
+                {
+                    films = await _dbContext.Films
+                                       .Include(x => x.Genre)
+                                       .OrderByDescending(film => film.ReleaseDate)
+                                       .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
+                                       .ToListAsync();
+                }
+                else
+                {
+                    films = await _dbContext.Films
+                                       .Include(x => x.Genre)
+                                       .OrderByDescending(film => film.ReleaseDate)
+                                       .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
+                                       .ToListAsync();
+                }
             }
 
-            if(!String.IsNullOrEmpty(filterTitle) && filterGenre == "Choose a genre")
+            if (!String.IsNullOrEmpty(filterTitle) && filterGenre == "Choose a genre")
             {
-                films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower())).ToList();                   
+                films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower())).ToList();
             }
             else if (String.IsNullOrEmpty(filterTitle) && filterGenre != "Choose a genre")
             {
                 films = films.Where(x => x.Genre.Description == filterGenre).ToList();
             }
-            else if(!String.IsNullOrEmpty(filterTitle) && filterGenre != "Choose a genre")
+            else if (!String.IsNullOrEmpty(filterTitle) && filterGenre != "Choose a genre")
             {
                 films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower()) && x.Genre.Description == filterGenre).ToList();
             }
 
             List<MediaListViewModel> vmList = films.Select(x => new MediaListViewModel()
-             {
-                 Id = x.Id,
-                 Title = x.Title,
-                 ReleaseDate = x.ReleaseDate,
-                 Genre = x.Genre.Description,
-                 Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
-                 PhotoUrl = x.PhotoUrl,
-             }).ToList();
+            {
+                Id = x.Id,
+                Title = x.Title,
+                ReleaseDate = x.ReleaseDate,
+                Genre = x.Genre.Description,
+                Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
+                Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
+                PhotoUrl = x.PhotoUrl,
+            }).ToList();
 
-                
+
             return View(vmList);
         }
         [AllowAnonymous]
@@ -102,9 +125,10 @@ namespace MediaApp.Controllers
                 Genre = film.Genre.Description,
                 Duration = film.Duration,
                 ContentUrl = film.ContentUrl,
-                Accessibility = film.Accessibility
+                Public = film.Public
 
             };
+
             return View(vm);
         }
         [Authorize]
@@ -141,12 +165,11 @@ namespace MediaApp.Controllers
                     Director = vm.Director,
                     GenreId = vm.SelectedGenreId,
                     Duration = vm.Duration,
-                    Accessibility = vm.Public,
-                    UserId = userId, 
+                    Public = vm.Public,
+                    UserId = userId,
                     ContentUrl = vm.ContentUrl
-
-
                 };
+
 
                 if (vm.Photo != null)
                 {
@@ -183,7 +206,7 @@ namespace MediaApp.Controllers
                 vm.SelectedGenreId = filmToEdit.Genre.Id;
                 vm.Duration = filmToEdit.Duration;
                 vm.ContentUrl = filmToEdit.ContentUrl;
-                vm.Public = filmToEdit.Accessibility;
+                vm.Public = filmToEdit.Public;
 
                 return View(vm);
 
@@ -207,7 +230,7 @@ namespace MediaApp.Controllers
                 changedFilm.GenreId = vm.SelectedGenreId;
                 changedFilm.Duration = vm.Duration;
                 changedFilm.ContentUrl = vm.ContentUrl;
-                changedFilm.Accessibility = vm.Public;
+                changedFilm.Public = vm.Public;
 
                 if (vm.Photo != null)
                 {
@@ -255,6 +278,21 @@ namespace MediaApp.Controllers
 
             return (RedirectToAction("Index"));
         }
+        public async Task RemoveFromSeen(int id)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+            MediaSeen mediaSeen = await _dbContext.MediaSeens.Where(x => x.MediaId == id && x.UserId == user.Id).FirstOrDefaultAsync();
+
+            _dbContext.MediaSeens.Remove(mediaSeen);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddToSeen(int id)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _dbContext.MediaSeens.Add(new MediaSeen() { MediaId = id, UserId = user.Id });
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -8,7 +8,8 @@ namespace MediaApp.Domain.MediaTypes
     public class MediaSeen
     {
         public int MediaId { get; set; }
-        public int UserId { get; set; }
-        public bool Seen { get; set; }
+        public Media Media { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
     }
 }

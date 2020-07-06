@@ -19,13 +19,8 @@ namespace MediaApp.Models
         public DateTime ReleaseDate { get; set; } = DateTime.Now;
         public TimeSpan Duration { get; set; }
         public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
-        public string Public { get; set; } = "Public";
-        public List<SelectListItem> PublicStatus = new List<SelectListItem>(){
-            new SelectListItem(){ Value = "Public", Text="Public"},
-            new SelectListItem(){ Value = "Private", Text="Private"}};
-
+        public bool Public { get; set; }
         public string ContentUrl { get; set; }
-
         public int SelectedGenreId { get; set; }
         public IFormFile Photo { get; set; }
     }

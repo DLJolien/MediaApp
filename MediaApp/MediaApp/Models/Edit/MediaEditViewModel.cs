@@ -20,10 +20,8 @@ namespace MediaApp.Models.Edit
         public TimeSpan Duration { get; set; }
         public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
         public int SelectedGenreId { get; set; }
-        public string Public { get; set; } = "Public";
-        public List<SelectListItem> PublicStatus = new List<SelectListItem>(){
-            new SelectListItem(){ Value = "Public", Text="Public"},
-            new SelectListItem(){ Value = "Private", Text="Private"}};
+        public bool Public { get; set; }
+
         public IFormFile Photo { get; set; }
         public string PhotoUrl { get; set; }
         public string ContentUrl { get; set; }

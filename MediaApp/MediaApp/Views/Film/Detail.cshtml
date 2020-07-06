@@ -34,14 +34,18 @@
     <div class="Status-Label">
         <strong>Status</strong>
     </div>
-    <div class="Status-Input">
-        <p>----</p>
-    </div>
     <div class="Accessibility-Label">
         <strong>Accessibility</strong>
     </div>
     <div class="Accessibility-Input">
-        <p>@Model.Accessibility</p>
+        @if(@Model.Public)
+        {
+        <p>Public</p>
+        }
+        else
+        {
+         <p>Private</p>
+        }
     </div>
 
 
@@ -85,9 +89,9 @@
     .grid-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 1px 1px;
-        grid-template-areas: "Title Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Status-Label Status-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+        grid-template-areas: "Title Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
     }
 
     .Photo {
@@ -142,11 +146,6 @@
         font-size: 20px;
     }
 
-    .Status-Label {
-        grid-area: Status-Label;
-        padding-left: 10%;
-        font-size: 20px;
-    }
 
     .Director-Input {
         grid-area: Director-Input;
@@ -168,10 +167,6 @@
         font-size: 20px;
     }
 
-    .Status-Input {
-        grid-area: Status-Input;
-        font-size: 20px;
-    }
     .Accessibility-Input {
         grid-area: Accessibility-Input;
         font-size: 20px;
