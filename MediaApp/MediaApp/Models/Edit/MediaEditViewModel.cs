@@ -18,8 +18,6 @@ namespace MediaApp.Models.Edit
         [Range(typeof(DateTime), "01/01/1910", "01/01/2040")]
         public DateTime ReleaseDate { get; set; }
         public TimeSpan Duration { get; set; }
-        public int SelectedStatusId { get; set; }
-        public List<SelectListItem> Statuses { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> Genres { get; set; } = new List<SelectListItem>();
         public int SelectedGenreId { get; set; }
         public string Public { get; set; } = "Public";

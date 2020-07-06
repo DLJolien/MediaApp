@@ -136,7 +136,7 @@ namespace MediaApp.Controllers
 
             IEnumerable<Film> films;
 
-            films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).ToListAsync();
+            films = await _dbContext.Films.Include(x => x.Genre).ToListAsync();
 
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
             {
@@ -172,7 +172,7 @@ namespace MediaApp.Controllers
 
             IEnumerable<Film> films;
 
-            films = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).ToListAsync();
+            films = await _dbContext.Films.Include(x => x.Genre).ToListAsync();
 
             if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
             {

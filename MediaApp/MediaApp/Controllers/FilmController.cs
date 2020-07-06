@@ -40,7 +40,6 @@ namespace MediaApp.Controllers
             if (!_signInManager.IsSignedIn(User))
             {
                 films = await _dbContext.Films
-                                        .Include(x => x.Status)
                                         .Include(x => x.Genre)
                                         .OrderByDescending(film => film.ReleaseDate)
                                         .Where(film => film.Accessibility == "Public")
@@ -49,7 +48,6 @@ namespace MediaApp.Controllers
             else if (User.IsInRole("Admin"))
             {
                 films = await _dbContext.Films
-                                        .Include(x => x.Status)
                                         .Include(x => x.Genre)
                                         .OrderByDescending(film => film.ReleaseDate)
                                         .ToListAsync();
@@ -57,7 +55,6 @@ namespace MediaApp.Controllers
             else
             {
                 films = await _dbContext.Films
-                                        .Include(x => x.Status)
                                         .Include(x => x.Genre)
                                         .OrderByDescending(film => film.ReleaseDate)
                                         .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Accessibility == "Public")
@@ -81,7 +78,6 @@ namespace MediaApp.Controllers
              {
                  Id = x.Id,
                  Title = x.Title,
-                 Status = x.Status.Description,
                  ReleaseDate = x.ReleaseDate,
                  Genre = x.Genre.Description,
                  Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
@@ -95,12 +91,11 @@ namespace MediaApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
 
-            Film film = await _dbContext.Films.Include(x => x.Status).Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
+            Film film = await _dbContext.Films.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
             FilmDetailViewModel vm = new FilmDetailViewModel()
             {
                 Id = film.Id,
                 Title = film.Title,
-                Status = film.Status.Description,
                 ReleaseDate = film.ReleaseDate,
                 PhotoUrl = film.PhotoUrl,
                 Director = film.Director,
@@ -119,10 +114,8 @@ namespace MediaApp.Controllers
             FilmCreateViewModel vm = new FilmCreateViewModel();
 
             var genres = await _dbContext.FilmGenres.ToListAsync();
-            var statuses = await _dbContext.Statuses.ToListAsync();
 
             vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
-            vm.Statuses = statuses.Select(status => new SelectListItem() { Value = status.Id.ToString(), Text = status.Description }).ToList();
 
             return View(vm);
         }
@@ -134,10 +127,8 @@ namespace MediaApp.Controllers
             if (!TryValidateModel(vm))
             {
                 var genres = await _dbContext.FilmGenres.ToListAsync();
-                var statuses = await _dbContext.Statuses.ToListAsync();
 
                 vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
-                vm.Statuses = statuses.Select(status => new SelectListItem() { Value = status.Id.ToString(), Text = status.Description }).ToList();
 
                 return View(vm);
             }
@@ -146,7 +137,6 @@ namespace MediaApp.Controllers
                 Film newFilm = new Film()
                 {
                     Title = vm.Title,
-                    StatusId = vm.SelectedStatusId,
                     ReleaseDate = vm.ReleaseDate,
                     Director = vm.Director,
                     GenreId = vm.SelectedGenreId,
@@ -176,20 +166,17 @@ namespace MediaApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
 
-            Film filmToEdit = await _dbContext.Films.Include(x => x.Genre).Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == id);
+            Film filmToEdit = await _dbContext.Films.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
             if (User.IsInRole("Admin") || filmToEdit.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 FilmEditViewModel vm = new FilmEditViewModel();
 
                 var genres = await _dbContext.FilmGenres.ToListAsync();
-                var statuses = await _dbContext.Statuses.ToListAsync();
 
                 vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
-                vm.Statuses = statuses.Select(status => new SelectListItem() { Value = status.Id.ToString(), Text = status.Description }).ToList();
 
                 vm.Id = filmToEdit.Id;
                 vm.Title = filmToEdit.Title;
-                vm.SelectedStatusId = filmToEdit.Status.Id;
                 vm.ReleaseDate = filmToEdit.ReleaseDate;
                 vm.PhotoUrl = filmToEdit.PhotoUrl;
                 vm.Director = filmToEdit.Director;
@@ -210,12 +197,11 @@ namespace MediaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(FilmEditViewModel vm)
         {
-            Film changedFilm = await _dbContext.Films.Include(x => x.Genre).Include(x => x.Status).FirstOrDefaultAsync(x => x.Id == vm.Id);
+            Film changedFilm = await _dbContext.Films.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == vm.Id);
             if (User.IsInRole("Admin") || changedFilm.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
 
                 changedFilm.Title = vm.Title;
-                changedFilm.StatusId = vm.SelectedStatusId;
                 changedFilm.ReleaseDate = vm.ReleaseDate;
                 changedFilm.Director = vm.Director;
                 changedFilm.GenreId = vm.SelectedGenreId;

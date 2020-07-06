@@ -20,10 +20,6 @@ namespace MediaApp.Domain
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Status>().HasData(
-                new Status() { Id = 1, Description = "Experienced" },
-                new Status() { Id = 2, Description = "Want to experience" }
-                );
 
             modelBuilder.Entity<MusicGenre>().HasData(
                 new MusicGenre() { Id = 1, Description = "Pop" },
@@ -106,6 +102,8 @@ namespace MediaApp.Domain
                 
             );
 
+            modelBuilder.Entity<MediaSeen>().HasKey(ms => new {ms.MediaId, ms.UserId });
+
             modelBuilder.Entity<PlaylistMedia>().HasKey(pm => new { pm.MediaId, pm.PlaylistId });
 
             modelBuilder.Entity<PlaylistMedia>()
@@ -122,7 +120,6 @@ namespace MediaApp.Domain
             modelBuilder.Entity<Film>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Music>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Podcast>().HasOne(x => x.Genre).WithMany().OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Media>().HasOne(x => x.Status).WithMany().OnDelete(DeleteBehavior.NoAction);
 
         }
         public DbSet<Media> Media { get; set; }
@@ -135,7 +132,6 @@ namespace MediaApp.Domain
         public DbSet<FilmGenre> FilmGenres { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Status> Statuses { get; set; }
         public DbSet<Playlist<Media>> Playlists { get; set; }
         public DbSet<PlaylistMedia> PlaylistMedias { get; set; }
         private static string HashPassword(string password)
