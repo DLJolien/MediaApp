@@ -26,6 +26,8 @@
     <Compile Remove="Data\Migrations\20200706092307_ChangeAccessibilityStringToPublicBool.Designer.cs" />
     <Compile Remove="Data\Migrations\20200706094225_ChangeAccessibilityStringToPublicBool.cs" />
     <Compile Remove="Data\Migrations\20200706094225_ChangeAccessibilityStringToPublicBool.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200707091556_ChangedCommentTable.cs" />
+    <Compile Remove="Data\Migrations\20200707091556_ChangedCommentTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

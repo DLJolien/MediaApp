@@ -26,9 +26,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @{ if (!signInManager.IsSignedIn(User))
                             {
                                 <li class="nav-item">
@@ -81,8 +78,8 @@
         function RedirectToPlaylistOverview() {
             window.location.href = "/Playlist/Index"
         }
-        function RedirectToBookmarksOverview(id) {
-            window.location.href = "/Playlist/ManageFilms?id=" + id
+        function RedirectToBookmarksOverview() {
+            window.location.href = "/Film/Bookmarks"
         }
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

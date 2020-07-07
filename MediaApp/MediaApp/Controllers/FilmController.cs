@@ -9,6 +9,7 @@ using MediaApp.Domain;
 using MediaApp.Domain.MediaTypes;
 using MediaApp.Models;
 using MediaApp.Models.Edit;
+using MediaApp.Models.Index;
 using MediaApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -31,7 +32,7 @@ namespace MediaApp.Controllers
             _signInManager = signInManager;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string filterTitle = "", string filterGenre = "Choose a genre", bool seeBookmarkedOnly = false)
+        public async Task<IActionResult> Index(string filterTitle = "", string filterGenre = "Choose a genre")
         {
             User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
@@ -40,7 +41,7 @@ namespace MediaApp.Controllers
             if (!_signInManager.IsSignedIn(User))
             {
                 films = await _dbContext.Films
-                    .Include(x => x.Genre)
+                    .Include(film => film.Genre)
                     .OrderByDescending(film => film.ReleaseDate)
                     .Where(film => film.Public == true)
                     .ToListAsync();
@@ -48,40 +49,20 @@ namespace MediaApp.Controllers
             }
             else if (User.IsInRole("Admin"))
             {
-                if (seeBookmarkedOnly)
-                {
                     films = await _dbContext.Films
-                        .Include(x => x.Genre)
+                        .Include(film => film.Genre)
                         .OrderByDescending(film => film.ReleaseDate)
-                        .ToListAsync();
-                }
-                else
-                {
-                    films = await _dbContext.Films
-                        .Include(x => x.Genre)
-                        .OrderByDescending(film => film.ReleaseDate)
-                        .ToListAsync();
-                }
+                        .ToListAsync();             
             }
             else
             {
-                if (seeBookmarkedOnly)
-                {
-                    films = await _dbContext.Films
-                                       .Include(x => x.Genre)
-                                       .OrderByDescending(film => film.ReleaseDate)
-                                       .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
-                                       .ToListAsync();
-                }
-                else
-                {
-                    films = await _dbContext.Films
-                                       .Include(x => x.Genre)
-                                       .OrderByDescending(film => film.ReleaseDate)
-                                       .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
-                                       .ToListAsync();
-                }
+                films = await _dbContext.Films
+                                    .Include(film => film.Genre)
+                                   .OrderByDescending(film => film.ReleaseDate)
+                                   .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
+                                   .ToListAsync();
             }
+
 
             if (!String.IsNullOrEmpty(filterTitle) && filterGenre == "Choose a genre")
             {
@@ -110,6 +91,25 @@ namespace MediaApp.Controllers
 
             return View(vmList);
         }
+        public async Task<IActionResult> Bookmarks()
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Playlist<Media> playlist = await _dbContext.Playlists.FirstOrDefaultAsync(x => x.Id == user.BookmarkedFilmsId);
+            IEnumerable <Media> bookmarkedMedia = _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == playlist.Id).Select(x => x.Media).OrderByDescending(film => film.ReleaseDate);
+
+            List<BookmarkListViewModel> vmList = bookmarkedMedia.Select(x => new BookmarkListViewModel()
+            {
+                Id = x.Id,
+                Title = x.Title,
+                ReleaseDate = x.ReleaseDate,
+                Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
+                Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
+                PhotoUrl = x.PhotoUrl,
+            }).ToList();
+
+            return View(vmList);
+
+        }
         [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {
@@ -125,8 +125,8 @@ namespace MediaApp.Controllers
                 Genre = film.Genre.Description,
                 Duration = film.Duration,
                 ContentUrl = film.ContentUrl,
-                Public = film.Public
-
+                Public = film.Public,
+                Comments = await _dbContext.Comments.Where(comment => comment.MediaId == film.Id).OrderByDescending(x => x.PublishedDate).ToListAsync()
             };
 
             return View(vm);
@@ -292,6 +292,18 @@ namespace MediaApp.Controllers
         {
             User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             _dbContext.MediaSeens.Add(new MediaSeen() { MediaId = id, UserId = user.Id });
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task Comment(int Id, string comment)
+        {
+            _dbContext.Comments.Add(new Comment()
+            {
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Description = comment,
+                PublishedDate = DateTime.Now,
+                MediaId = Id
+
+            });
             await _dbContext.SaveChangesAsync();
         }
     }

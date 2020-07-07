@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaApp.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace MediaApp.Models
         public string Genre { get; set; }
         public string ContentUrl { get; set; }
         public bool Public { get; set; }
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public string InputComment { get; set; }
 
     }
 }

@@ -1,4 +1,7 @@
 ﻿@model FilmDetailViewModel;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MediaApp.Domain.User> signInManager
+@inject UserManager<MediaApp.Domain.User> userManager
 
 <div class="grid-container">
     <div class="Photo">
@@ -31,30 +34,28 @@
     <div class="Genre-Input">
         <p>@Model.Genre</p>
     </div>
-    <div class="Status-Label">
-        <strong>Status</strong>
-    </div>
     <div class="Accessibility-Label">
         <strong>Accessibility</strong>
     </div>
     <div class="Accessibility-Input">
-        @if(@Model.Public)
+        @if (@Model.Public)
         {
-        <p>Public</p>
+            <p>Public</p>
         }
         else
         {
-         <p>Private</p>
+            <p>Private</p>
         }
     </div>
 
 
     <div class="View-Content">
-        @if(!String.IsNullOrEmpty(@Model.ContentUrl)){
-        <form action="@Model.ContentUrl">
-            <input type="submit" value="View Content" />
-        </form>
-            }
+        @if (!String.IsNullOrEmpty(@Model.ContentUrl))
+        {
+            <form action="@Model.ContentUrl">
+                <input type="submit" value="View Content" />
+            </form>
+        }
     </div>
     <div class="Functions">
         <p>
@@ -64,8 +65,89 @@
         </p>
     </div>
 </div>
+@if (signInManager.IsSignedIn(User))
+{
+    <img id="input-comment-user-photo" src="/users/user.png">
+    @*src="@userManager.GetUserAsync(User).Result.PhotoUrl"*@
+    <p>Post as @userManager.GetUserAsync(User).Result.UserName.Split('@')[0]</p>
+    <div class="form-group">
+        <textarea id="comment-text" placeholder="Write your comment here..." rows="5"></textarea>
+    </div>
+    <button onclick="SubmitComment(@Model.Id)" class="btn btn-info" type="submit"> Comment</button>
+
+}
+else
+{
+    <p>You need to sign in first in order to comment.</p>
+}
+
+<div id="comments">
+    @if (Model.Comments.Count == 0)
+    {
+        <h2>Comments</h2>
+        <p>No comments have been posted yet.</p>
+    }
+    else
+    {
+        <h2>@Model.Comments.Count Comments</h2>
+        foreach (var comment in Model.Comments)
+        {
+            <div id="comment-grid-container">
+                <div class="user-photo">
+                    <img src="@comment.User.PhotoUrl" class="photo-url" />
+                </div>
+                <div class="user-name">
+                    <p>@comment.User.UserName.Split('@')[0]</p>
+                </div>
+                <div class="date-posted">
+                    @{
+                        var timepassed = DateTime.Now - comment.PublishedDate;
+                        if (Math.Round(timepassed.TotalSeconds) < 60)
+                        {
+                            <p>posted @Math.Round(timepassed.TotalSeconds) seconds ago</p>
+                        }
+                        else if (Math.Round(timepassed.TotalMinutes) < 60)
+                        {
+                            <p>posted @Math.Round(timepassed.TotalMinutes) minutes ago</p>
+                        }
+                        else if (Math.Round(timepassed.TotalHours) < 24)
+                        {
+                            <p>posted @Math.Round(timepassed.TotalHours) hours ago</p>
+                        }
+                        else if (Math.Round(timepassed.TotalDays) < 30)
+                        {
+                            <p>posted @Math.Round(timepassed.TotalDays) days ago</p>
+                        }
+                        else if (Math.Ceiling(timepassed.TotalDays / 30) < 2)
+                        {
+                            <p>posted @Math.Ceiling(timepassed.TotalDays/30) days ago</p>
+                        }
+                    }
+                </div>
+                <div class="comment-text">
+                    <p>@comment.Description</p>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script>
+    async function SubmitComment(id) {
+        var comment = document.getElementById("comment-text");
+        await $.post("/Film/Comment", { id: id, comment: comment.value }, function () {
+            console.log("posted comment: " + comment.value);
+        });
+        comment.value = "";
+        window.location.reload();
+    }
+</script>
 
 <style>
+    #input-comment-user-photo {
+        width: 8vw;
+    }
+
     .View-Content form {
         width: 100%;
     }
@@ -171,6 +253,7 @@
         grid-area: Accessibility-Input;
         font-size: 20px;
     }
+
     .Accessibility-Label {
         grid-area: Accessibility-Label;
         padding-left: 10%;
