@@ -107,7 +107,7 @@ namespace MediaApp.Controllers
                 Duration = film.Duration,
                 ContentUrl = film.ContentUrl,
                 Public = film.Public,
-                Comments = await _dbContext.Comments.Where(comment => comment.MediaId == film.Id).OrderByDescending(x => x.PublishedDate).ToListAsync()
+                Comments = await _dbContext.Comments.Include(x => x.User).Where(comment => comment.MediaId == film.Id).OrderByDescending(x => x.PublishedDate).ToListAsync()
             };
 
             return View(vm);

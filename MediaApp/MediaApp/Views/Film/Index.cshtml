@@ -30,8 +30,7 @@
             <div class="row">
                 @foreach (var film in Model)
                 {
-
-                    <div id="div-@film.Id" class="col-3" name = "@film.Seen">
+                    <div id="div-@film.Id" class="col-3" name="@film.Seen">
                         <div class="item">
                             @if (film.Seen)
                             {
@@ -44,16 +43,17 @@
 
                             @if (film.Bookmarked)
                             {
-                                <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id"onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id" onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
                             }
                             else
                             {
-                                <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id"onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id" onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
                             }
-                            <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                <img src="@film.PhotoUrl" />
-                            </a>
+                        <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                            <img src="@film.PhotoUrl" />
                             <p>@film.Title - @film.ReleaseDate.Year</p>
+                        </a>
+                            
                         </div>
                     </div>
                 }
@@ -75,8 +75,8 @@
         }
         console.log("hidden");
         var divs = document.getElementsByName("name");
-        divs.forEach(x => x.style.backgroundColor = "grey");
-    }   
+        divs.forEach(x => x.style.backgroundColor = "rgba(0, 0, 0, 0.85)");
+    }
     function AddFilmToBookmark(id) {
         $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
             console.log("addedtobookmarks" + id);
@@ -112,13 +112,13 @@
         });
         var seen = document.getElementById("seen-" + id);
         seen.onclick = function () { AddToSeen(id) };
+        console.log(seen);
         var icon = document.getElementById("icon-" + id);
         icon.className = "far fa-eye";
         console.log(icon);
         var div = document.getElementById("div-" + id);
+        console.log(div);
         div.style.backgroundColor = "white";
-
-
     }
     function AddToSeen(id) {
         $.post("/Film/AddToSeen", { id: id }, function () {
@@ -129,34 +129,54 @@
         var icon = document.getElementById("icon-" + id);
         icon.className = "far fa-eye-slash";
         var div = document.getElementById("div-" + id);
-        div.style.backgroundColor = "grey";
+        console.log(div);
+        div.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
     }
 </script>
 <style>
+    .container .row .col-3 p.red-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+        
+    }
     .container .row .col-3:hover p.red-heart {
         color: red;
         visibility: visible !important;
         cursor: pointer;
     }
-
+    .container .row .col-3 p.grey-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+        
+    }
     .container .row .col-3:hover p.grey-heart {
         color: black;
         visibility: visible !important;
         cursor: pointer;
     }
-
+    .container .row .col-3 p.eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+        
+    }
     .container .row .col-3:hover p.eye {
         color: black;
         visibility: visible !important;
         cursor: pointer;
     }
-
+    .container .row .col-3 p.slashed-eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+    }
     .container .row .col-3:hover p.slashed-eye {
         color: black;
         visibility: visible !important;
         cursor: pointer;
     }
-
     div .col-3 .item {
         width: 100%;
     }
@@ -176,10 +196,18 @@
 
     img {
         width: 100%;
-        height: 280px;
+        height: 320px;
+        display: block;
     }
 
     .col-3 {
         border: solid 1px;
     }
+
+    .container .row .col-3 div > a > p {
+        font-weight: 600;
+        text-shadow: 2px 2px 8px #FFFFFF;
+    }
+
+
 </style>
