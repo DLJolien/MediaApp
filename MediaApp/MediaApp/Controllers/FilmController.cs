@@ -91,25 +91,6 @@ namespace MediaApp.Controllers
 
             return View(vmList);
         }
-        public async Task<IActionResult> Bookmarks()
-        {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            Playlist<Media> playlist = await _dbContext.Playlists.FirstOrDefaultAsync(x => x.Id == user.BookmarkedFilmsId);
-            IEnumerable <Media> bookmarkedMedia = _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == playlist.Id).Select(x => x.Media).OrderByDescending(film => film.ReleaseDate);
-
-            List<BookmarkListViewModel> vmList = bookmarkedMedia.Select(x => new BookmarkListViewModel()
-            {
-                Id = x.Id,
-                Title = x.Title,
-                ReleaseDate = x.ReleaseDate,
-                Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
-                Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
-                PhotoUrl = x.PhotoUrl,
-            }).ToList();
-
-            return View(vmList);
-
-        }
         [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {

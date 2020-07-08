@@ -40,7 +40,7 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" onclick="RedirectToFilmOverview()">Overview films</a>
-                                        <a class="dropdown-item" onclick="RedirectToBookmarksOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
+                                        <a class="dropdown-item" onclick="RedirectToBookmarkFilmOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
                                         <a class="dropdown-item" onclick="RedirectToFilmCreate()">Create film</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" onclick="RedirectToPlaylistOverview()">Overview film playlists</a>
@@ -78,8 +78,8 @@
         function RedirectToPlaylistOverview() {
             window.location.href = "/Playlist/Index"
         }
-        function RedirectToBookmarksOverview() {
-            window.location.href = "/Film/Bookmarks"
+        function RedirectToBookmarkFilmOverview() {
+            window.location.href = "/Bookmark/Film"
         }
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

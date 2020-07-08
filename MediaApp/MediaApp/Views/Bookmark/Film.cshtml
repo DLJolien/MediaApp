@@ -23,7 +23,6 @@
             <div class="row">
                 @foreach (var film in Model)
                 {
-
                     <div id="div-@film.Id" class="col-3" name="@film.Seen">
                         <div class="item">
                             @if (film.Seen)
@@ -70,16 +69,8 @@
         var divs = document.getElementsByName("name");
         divs.forEach(x => x.style.backgroundColor = "grey");
     }
-    function ChangeBackgroundColor(bool, id) {
-        if (bool) {
-            var div = document.getElementById("div-" + id);
-            div.style.backgroundColor = "grey";
-            console.log("grey background for film " + id);
-        }
-        console.log("opened function");
-    }
     function AddFilmToBookmark(id) {
-        $.post("/Playlist/SaveFilmToBookmarks", { id: id }, function () {
+        $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
             console.log("addedtobookmarks" + id);
         });
         var heart = document.getElementById(id);
@@ -89,7 +80,7 @@
         console.log(icon);
     }
     function RemoveFilmFromBookmark(id) {
-        $.post("/Playlist/RemoveFilmFromBookmarks", { id: id }, function () {
+        $.post("/Bookmark/RemoveFromBookmarks", { id: id }, function () {
             console.log("removedfrombookmarks" + id);
         });
         var heart = document.getElementById(id);
@@ -113,12 +104,13 @@
         });
         var seen = document.getElementById("seen-" + id);
         seen.onclick = function () { AddToSeen(id) };
+        console.log(seen);
         var icon = document.getElementById("icon-" + id);
         icon.className = "far fa-eye";
+        console.log(icon);
         var div = document.getElementById("div-" + id);
-        div.style.backgroundColor = "transparant";
-
-
+        console.log(div);
+        div.style.backgroundColor = "white";
     }
     function AddToSeen(id) {
         $.post("/Film/AddToSeen", { id: id }, function () {
@@ -129,6 +121,7 @@
         var icon = document.getElementById("icon-" + id);
         icon.className = "far fa-eye-slash";
         var div = document.getElementById("div-" + id);
+        console.log(div);
         div.style.backgroundColor = "grey";
     }
 </script>
