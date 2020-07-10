@@ -29,7 +29,7 @@
             </div>
             @foreach (var comment in Model)
             {
-                <div class="row">
+                <div id="comment" class="row">
                     <div class="col">
                         <i id="icon-remove" onclick="Remove(@comment.Id)" class="fas fa-times"></i>
                         <i id="icon-approve"onclick="Approve(@comment.Id)"class="fas fa-chevron-down"></i>
@@ -68,6 +68,12 @@
     }
 </script>
 <style>
+    #comment:hover{
+        background-color: lightblue;
+    }
+    i{
+        font-size: 25px;
+    }
     i:hover{
         cursor: pointer;
     }
