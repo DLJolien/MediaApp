@@ -1,43 +1,67 @@
 ﻿@model MediaApp.Models.Create.PlaylistCreateViewModel
 
-    <h1>Let's make a @Model.MediaType playlist...</h1>
-
-<form asp-controller="Playlist" asp-action="Create" asp-route-mediaType ="@Model.MediaType" method="post">
-    <div id="basic-info">
-        <div class="form-group">
-            <label asp-for="Title"></label>
-            <input asp-for="Title" />
-            <span class="text-danger" asp-validation-for="Title"></span>
+    <div id="create-container" class="container">
+        <div class="row">
+            <div class="col-12" align="center">
+                <h1>Let's make a @Model.MediaType playlist...</h1>
+            </div>
         </div>
-        <div class="form-group">
-            @Html.RadioButtonFor(m => m.Public, "true") <span>Public</span>
-            @Html.RadioButtonFor(m => m.Public, "false") <span>Private</span>
-        </div>
-        <div class="form-group">
-            <button class="btn-success" type="submit">Create playlist</button>
-        </div>
+        <form asp-controller="Playlist" asp-action="Create" asp-route-mediaType="@Model.MediaType" method="post">
+            <div id="basic-info" class="row">
+                <div class="col-6" align="right">
+                    <div id="title-form-group" class="form-group">
+                        <label asp-for="Title"></label>
+                        <input asp-for="Title" />
+                        <span class="text-danger" asp-validation-for="Title"></span>
+                    </div>
+                </div>
+                <div class="col-6" align="left">
+                    <div class="form-group">
+                        @Html.RadioButtonFor(m => m.Public, "true") <span>Public</span>
+                        @Html.RadioButtonFor(m => m.Public, "false") <span>Private</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6" align="right">
+                    <div class="form-group">
+                        <button type="button" onclick="Return()"class="btn btn-dark">Cancel</button>
+                    </div>
+                </div>
+                <div class="col-6" align="left">
+                    <div class="form-group">
+                        <button class="btn btn-info" type="submit">Create</button>
+                    </div>
+                </div>
+            </div>
+               
+        </form>
     </div>
-</form>
-
+    <script>
+        function Return() {
+            window.location.href="/Film/Index"
+        }
+    </script>
 <style>
-    <style >
-    body > div.container {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
+    h1 {
+        font-size: 50px;
+        margin-bottom: 5%;
+        margin-top: 5%;
     }
-
-    #basic-info {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        font-size: 18px;
+    #title-form-group{
+        width: 100%;
     }
-
-
-    #Title {
-        width: 70%;
+    .form-group > *{
+        font-size: 20px;
     }
-
-
+    #create-container{
+        height: 90vh;
+    }
+    #basic-info{
+        align-content:space-between;
+    }
+    .col-6{
+        justify-self: flex-end;
+    }
+  
 </style>

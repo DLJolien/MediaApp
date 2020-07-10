@@ -1,4 +1,4 @@
-﻿@model FilmDetailViewModel;
+﻿@model FilmDetailViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 @inject UserManager<MediaApp.Domain.User> userManager
@@ -67,19 +67,35 @@
 </div>
 @if (signInManager.IsSignedIn(User))
 {
-    <img id="input-comment-user-photo" src="/users/user.png">
-    @*src="@userManager.GetUserAsync(User).Result.PhotoUrl"*@
-    <p>Post as @userManager.GetUserAsync(User).Result.UserName.Split('@')[0]</p>
-    <div class="form-group">
-        <textarea id="comment-text" placeholder="Write your comment here..." rows="5"></textarea>
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10" align="left">
+                Post as @userManager.GetUserAsync(User).Result.UserName.Split('@')[0]
+            </div>
+        </div>
+        <div id="comment-row" class="row">
+            <div id="photo-col" class="col-2" align="right">
+                <img id="input-comment-user-photo" src="@userManager.GetUserAsync(User).Result.PhotoUrl">
+            </div>
+            <div class="col-10" align="left">
+                <textarea id="comment-text" placeholder="Write your comment here..." rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" align="right">
+                <button onclick="SubmitComment(@Model.Id)" class="btn btn-info" type="submit"> Comment</button>
+            </div>
+        </div>
     </div>
-    <button onclick="SubmitComment(@Model.Id)" class="btn btn-info" type="submit"> Comment</button>
 
 }
 else
 {
     <p>You need to sign in first in order to comment.</p>
 }
+
 
 <div id="comments">
     @if (Model.Comments.Count == 0)
@@ -89,46 +105,57 @@ else
     }
     else
     {
-        <h2>@Model.Comments.Count Comments</h2>
-        foreach (var comment in Model.Comments)
-        {
-            <div id="comment-grid-container">
-                <div class="user-photo">
-                    <img src="@comment.User.PhotoUrl" class="photo-url" />
-                </div>
-                <div class="user-name">
-                    <p>@comment.User.UserName.Split('@')[0]</p>
-                </div>
-                <div class="date-posted">
-                    @{
-                        var timepassed = DateTime.Now - comment.PublishedDate;
-                        if (Math.Round(timepassed.TotalSeconds) < 60)
-                        {
-                            <p>posted @Math.Round(timepassed.TotalSeconds) seconds ago</p>
-                        }
-                        else if (Math.Round(timepassed.TotalMinutes) < 60)
-                        {
-                            <p>posted @Math.Round(timepassed.TotalMinutes) minutes ago</p>
-                        }
-                        else if (Math.Round(timepassed.TotalHours) < 24)
-                        {
-                            <p>posted @Math.Round(timepassed.TotalHours) hours ago</p>
-                        }
-                        else if (Math.Round(timepassed.TotalDays) < 30)
-                        {
-                            <p>posted @Math.Round(timepassed.TotalDays) days ago</p>
-                        }
-                        else if (Math.Ceiling(timepassed.TotalDays / 30) < 2)
-                        {
-                            <p>posted @Math.Ceiling(timepassed.TotalDays/30) days ago</p>
-                        }
-                    }
-                </div>
-                <div class="comment-text">
-                    <p>@comment.Description</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-12" align="left">
+                    <h2>@Model.Comments.Count Comments</h2>
                 </div>
             </div>
-        }
+
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-5">
+                        @comment.User.UserName.Split('@')[0]
+                    </div>
+                    <div class="col-5" align="right">
+                        @{
+                            var timepassed = DateTime.Now - comment.PublishedDate;
+                            if (Math.Round(timepassed.TotalSeconds) < 60)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalSeconds) seconds ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalMinutes) < 60)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalMinutes) minutes ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalHours) < 24)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalHours) hours ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalDays) < 30)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalDays) days ago</p>
+                            }
+                            else if (Math.Ceiling(timepassed.TotalDays / 30) < 2)
+                            {
+                                <p>posted @Math.Ceiling(timepassed.TotalDays / 30) days ago</p>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" align="right">
+                        <img id="posted-comment-url" src="@comment.User.PhotoUrl" class="photo-url" />
+                    </div>
+                    <div class="col-10">
+                        @comment.Description
+                    </div>
+                </div>
+            }
+        </div>
     }
 </div>
 
@@ -144,8 +171,24 @@ else
 </script>
 
 <style>
+    #comment-row {
+        height: 30%;
+    }
+
+    #photo-col {
+        height: 30%;
+    }
+    #posted-comment-url {
+        width: 30%;
+    }
+
+    #comment-text {
+        width: 100%;
+    }
+
     #input-comment-user-photo {
-        width: 8vw;
+        width: 50%;
+        height: 15%;
     }
 
     .View-Content form {

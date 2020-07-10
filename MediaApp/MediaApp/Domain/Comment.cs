@@ -15,5 +15,6 @@ namespace MediaApp.Domain
         public int MediaId { get; set; }
         public User User { get; set; }
         public string UserId { get; set; }
+        public bool IsApproved { get; set; } = false;
     }
 }

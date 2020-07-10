@@ -1,103 +1,128 @@
 ﻿@model MediaApp.Models.Create.PlaylistAddFilmViewModel
 
-<h1>Add or remove films from your playlist...</h1>
-
-<button onclick="Redirect()">
-        @if (@Model.AlreadyIncluded.Count == 0)
-        {
-            <p>Continue without adding</p>
-        }
-        else
-        {
-            <p>Continue to overview</p>
-        }
-</button>
-
-
-<div class="form-group">
-    <table>
-        @{
-            foreach (var media in Model.AllFilmsInLibrary)
-            {
-                <tr>
-                    <td class="feature">
-                        @if (Model.AlreadyIncluded.Contains(media))
-                        {
-
-                            <form asp-controller="Playlist" asp-action="RemoveFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
-                                <button type="submit"><i class="fas fa-minus"></i> </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form asp-controller="Playlist" asp-action="AddFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
-                                <button type="submit"><i class="fas fa-plus"></i> </button>
-                            </form>
-                        }
-                    </td>
-                    <td class="img"><img src="@media.PhotoUrl" /></td>
-                    <td class="info">@media.Title</td>
-                    <td class="info">@media.ReleaseDate.Year</td>
-                    <td class="info">@media.Duration</td>
-                </tr>
-            }
-        }
-    </table>
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+            <h1>Add some films to your playlist...</h1>
+        </div>
+        <div class="col-3" align="right">
+            <button class="btn btn-info" onclick="Redirect()">
+                @if (@Model.AlreadyIncluded.Count == 0)
+                {
+                    <p>Continue without adding</p>
+                }
+                else
+                {
+                    <p>Continue to overview</p>
+                }
+            </button>
+        </div>
+    </div>
+    <div id="filter-container" class="row">
+        <div class="col-9" align="left">
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+        </div>
+        <div class="col-3" align="right">
+            <button onclick="FilterOn(@Model.PlaylistId)" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            <button onclick="ClearFilter(@Model.PlaylistId)" id="btn-clear" class="btn btn-dark">Remove filter</button>
+        </div>
+    </div>
 </div>
-<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
-<script>
-    function Redirect() {
-        window.location.href='/playlist/index'
-    }
+<div id="items" class="container">
+@{
+    foreach (var media in Model.AllFilmsInLibrary)
+    {
+        <div class="row align-content-center">
 
-</script>
-<style>
-    tr {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
+            <div class="col" align="left">
+                @if (Model.AlreadyIncluded.Contains(media))
+                {
 
-        tr:hover {
-            background-color: lightgray;
+                    <form asp-controller="Playlist" asp-action="RemoveFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                        <button class="btn btn-danger" type="submit"><i class="fas fa-minus"></i> </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Playlist" asp-action="AddFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                        <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i> </button>
+                    </form>
+                }
+            </div>
+            <div class="col-2" align="center">
+                <img src="@media.PhotoUrl" />
+            </div>
+            <div class="col-6" align="left">
+                @media.Title
+            </div>
+            <div class="col" align="right">
+                @media.ReleaseDate.Year
+            </div>
+            <div class="col-2" align="right">
+                @media.Duration
+            </div>
+            
+        </div>
+        }
+    }
+</div>
+
+    <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+    <script>
+        function Redirect() {
+            window.location.href = '/playlist/index'
+        }
+        function FilterOn(id) {
+            var filterTitle = document.getElementById('filter').value
+            console.log(filterTitle);
+            window.location.href = "?id="+ id +"&filterTitle=" + filterTitle;
+        }
+        function ClearFilter(id) {
+            window.location.href = "?id=" + id +"&filterTitle=";
         }
 
-    table {
-        width: 100%;
-    }
+    </script>
+    <style>
+#items .row:hover {
+                background-color: lightgray;
+            }
 
-    body > div.container > main > form > div.form-group > table > tbody > tr > td.info {
-        display: flex;
-        justify-content: flex-end;
-    }
+        table {
+            width: 100%;
+        }
 
-    body > div.container > main > form > div.form-group > table > tbody > tr > td.img {
-        width: 7%;
-    }
+        body > div.container > main > form > div.form-group > table > tbody > tr > td.info {
+            display: flex;
+            justify-content: flex-end;
+        }
 
-    body > div.container > main > form > div.form-group > table > tbody > tr > td:nth-child(3) {
-        display: flex;
-        justify-content: flex-start;
-    }
+        body > div.container > main > form > div.form-group > table > tbody > tr > td.img {
+            width: 7%;
+        }
 
-    .info {
-        width: 30%;
-    }
+        body > div.container > main > form > div.form-group > table > tbody > tr > td:nth-child(3) {
+            display: flex;
+            justify-content: flex-start;
+        }
 
-    .feature {
-        width: 3%;
-    }
+        .info {
+            width: 30%;
+        }
 
-    img {
-        width: 50px;
-        height: 50px;
-    }
+        .feature {
+            width: 3%;
+        }
 
-    #basic-info > div:nth-child(1) {
-        width: 50vw;
-    }
+        img {
+            width: 50px;
+            height: 50px;
+        }
 
-    #clickableAwesomeFont {
-        cursor: pointer
-    }
-</style>
+        #basic-info > div:nth-child(1) {
+            width: 50vw;
+        }
+
+        #clickableAwesomeFont {
+            cursor: pointer
+        }
+    </style>

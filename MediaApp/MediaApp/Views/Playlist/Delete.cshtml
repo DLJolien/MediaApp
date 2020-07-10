@@ -1,13 +1,40 @@
 ﻿@model MediaApp.Models.Delete.PlaylistDeleteViewModel
 
+<div id="delete-container" class="container">
+    <div class="row">
+    <div class="col-12">
+        <h1>Are you sure you want to delete the playlist @Model.Title?</h1>
+    </div>  
+    </div>
+    <div class=row>
+        <div class="col-6" align="right">
+            
+            <button class="btn btn-dark"  onclick="GoToPlaylistIndex()">Cancel</button>
+        </div>
+        <div class="col-6" align="left">
+            <form asp-controller="Playlist" asp-action="ConfirmDelete" method="post" asp-route-id="@Model.Id">
+                <button class="btn btn-info">Yes</button>
+            </form>
+        </div>
+    </div>      
+</div>
 
-<h1>Are you sure you want to delete the playlist @Model.Title?</h1>
-<form asp-controller="Playlist" asp-action="ConfirmDelete" method="post" asp-route-id="@Model.Id">
-    <button>Yes</button>
-</form>
-    <button onclick ="GoToPlaylistIndex()">Cancel</button>
 <script>
     function GoToPlaylistIndex() {
-        window.location.href= "/Playlist/Index"
+        window.location.href = '/playlist/index'
     }
 </script>
+<style>
+    h1 {
+        font-size: 50px;
+        margin-bottom: 5%;
+        margin-top: 5%;
+    }
+
+    #delete-container {
+        height: 90vh;      
+    }
+    #delete-container button{
+        font-size: 20px;
+    }
+</style>
