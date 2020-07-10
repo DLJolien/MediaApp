@@ -77,17 +77,32 @@ namespace MediaApp.Controllers
                 films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower()) && x.Genre.Description == filterGenre).ToList();
             }
 
-            List<MediaListViewModel> vmList = films.Select(x => new MediaListViewModel()
-            {
-                Id = x.Id,
-                Title = x.Title,
-                ReleaseDate = x.ReleaseDate,
-                Genre = x.Genre.Description,
-                Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
-                Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
-                PhotoUrl = x.PhotoUrl,
-            }).ToList();
+            List<MediaListViewModel> vmList;
 
+            if (!_signInManager.IsSignedIn(User))
+            {
+                vmList = films.Select(x => new MediaListViewModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    ReleaseDate = x.ReleaseDate,
+                    Genre = x.Genre.Description,                   
+                    PhotoUrl = x.PhotoUrl,
+                }).ToList();
+            }
+            else
+            {
+                vmList = films.Select(x => new MediaListViewModel()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    ReleaseDate = x.ReleaseDate,
+                    Genre = x.Genre.Description,
+                    Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && y.PlaylistId == user.BookmarkedFilmsId).Result,
+                    Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
+                    PhotoUrl = x.PhotoUrl,
+                }).ToList();
+            }
 
             return View(vmList);
         }

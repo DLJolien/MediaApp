@@ -1,0 +1,83 @@
+﻿@model IEnumerable<MediaApp.Models.Index.CommentListViewModel>
+
+@{
+    if (Model.Count() == 0)
+    {
+        <p>There are no pending comments</p>
+    }
+    else
+    {
+        <p>There are @Model.Count() comments waiting on your approval</p>
+
+        <div class="container">
+            <div id="title" class="row">
+                <div class="col">
+                    Options
+                </div>
+                <div class="col-2">
+                    Author
+                </div>
+                <div class="col-4">
+                    Comment
+                </div>
+                <div class="col-2">
+                    Date
+                </div>
+                <div class="col-3">
+                    In response to
+                </div>
+            </div>
+            @foreach (var comment in Model)
+            {
+                <div class="row">
+                    <div class="col">
+                        <i id="icon-remove" onclick="Remove(@comment.Id)" class="fas fa-times"></i>
+                        <i id="icon-approve"onclick="Approve(@comment.Id)"class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="col-2">
+                        @comment.UserName.Split('@')[0]
+                    </div>
+                    <div class="col-4">
+                        @comment.Description
+                    </div>
+                    <div class="col-2">
+                        @comment.PublishedDate
+                    </div>
+                    <div class="col-3">
+                        <a href="/Film/Detail?id=@comment.MediaId">@comment.MediaTitle</a>                     
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+}
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<script>
+    async function Remove(id) {
+       await $.post("/Admin/RemoveComment", { id: id }, function () {
+            console.log("removed" + id);
+        });
+        window.location.href="/Admin/index"
+    }
+    async function Approve(id) {
+       await $.post("/Admin/ApproveComment", { id: id }, function () {
+            console.log("approved" + id);
+        });
+        window.location.href = "/Admin/index"
+    }
+</script>
+<style>
+    i:hover{
+        cursor: pointer;
+    }
+    #title{
+        font-weight: 500;
+    }
+    #icon-approve{
+        color: seagreen;
+    }
+    #icon-remove{
+        color: darkred;
+    }
+</style>

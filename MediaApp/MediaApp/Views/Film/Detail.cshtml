@@ -165,8 +165,7 @@ else
         await $.post("/Film/Comment", { id: id, comment: comment.value }, function () {
             console.log("posted comment: " + comment.value);
         });
-        comment.value = "";
-        window.location.reload();
+        comment.value = "Your comment is awaiting approval";
     }
 </script>
 

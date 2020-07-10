@@ -2,46 +2,49 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-    <div id="filter-container" class="container">
-        <div class="row">
-            <div class="col-6">
-                <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
-            </div>
-            <div class="col-3">
-                @{
-                    var genres = Model.Select(x => x.Genre).Distinct();
+<div id="filter-container" class="container">
+    <div class="row">
+        <div class="col-6">
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+        </div>
+        <div class="col-3">
+            @{
+                var genres = Model.Select(x => x.Genre).Distinct();
+            }
+            <select class="browser-default custom-select" id="selectionGenres">
+                <option selected>Choose a genre</option>
+                @foreach (var genre in genres)
+                {
+                    <option>@genre</option>
                 }
-                <select class="browser-default custom-select" id="selectionGenres">
-                    <option selected>Choose a genre</option>
-                    @foreach (var genre in genres)
-                    {
-                        <option>@genre</option>
-                    }
-                </select>
-            </div>
-            <div class="col">
-                <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
-            </div>
-            <div class="col-2">
-                <button onclick="ClearFilter()" id="btn-clear" class="btn btn-dark">Remove filter</button>
-            </div>
+            </select>
+        </div>
+        <div class="col">
+            <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="col-2">
+            <button onclick="ClearFilter()" id="btn-clear" class="btn btn-dark">Remove filter</button>
         </div>
     </div>
+</div>
 
 
-    @{if (Model.Count() == 0)
-        {
-            <br />
-            <strong>There are currently no films listed.</strong>
-        }
-        else
-        {
-            <div id="items" class="container">
-                <div class="row">
-                    @foreach (var film in Model)
-                    {
-                        <div id="div-@film.Id" class="col-3" name="@film.Seen">
-                            <div class="item">
+@{if (Model.Count() == 0)
+    {
+        <br />
+        <strong>There are currently no films listed.</strong>
+    }
+    else
+    {
+        <div id="items" class="container">
+            <div class="row">
+                @foreach (var film in Model)
+                {
+                    <div id="div-@film.Id" class="col-3" name="@film.Seen">
+                        <div class="item">
+
+                            @if (signInManager.IsSignedIn(User))
+                            {
                                 @if (film.Seen)
                                 {
                                     <p id="seen-@film.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye-slash"></i></p>
@@ -59,180 +62,180 @@
                                 {
                                     <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id" onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
                                 }
-                                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                    <img src="@film.PhotoUrl" />
-                                    <p>@film.Title - @film.ReleaseDate.Year</p>
-                                </a>
-
-                            </div>
+                            }
+                            <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                                <img src="@film.PhotoUrl" />
+                                <p>@film.Title - @film.ReleaseDate.Year</p>
+                            </a>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
-
-        }
+        </div>
     }
-    <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
-    <script>
-        window.onload = function () {
-            var hearts = document.getElementsByName("heart");
-            console.log(hearts);
-            var eyes = document.getElementsByName("eye");
-            console.log(eyes);
-            for (var i = 0; i < hearts.length; i++) {
-                hearts[i].style.visibility = "hidden";
-                eyes[i].style.visibility = "hidden";
-            }
-            console.log("hidden");
-            var divs = document.getElementsByName("name");
-            divs.forEach(x => x.style.backgroundColor = "rgba(0, 0, 0, 0.85)");
+}
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<script>
+    window.onload = function () {
+        var hearts = document.getElementsByName("heart");
+        console.log(hearts);
+        var eyes = document.getElementsByName("eye");
+        console.log(eyes);
+        for (var i = 0; i < hearts.length; i++) {
+            hearts[i].style.visibility = "hidden";
+            eyes[i].style.visibility = "hidden";
         }
-        function AddFilmToBookmark(id) {
-            $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
-                console.log("addedtobookmarks" + id);
-            });
-            var heart = document.getElementById(id);
-            heart.style.color = "red";
-            var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { RemoveFilmFromBookmark(id) };
-            console.log(icon);
-        }
-        function RemoveFilmFromBookmark(id) {
-            $.post("/Bookmark/RemoveFromBookmarks", { id: id }, function () {
-                console.log("removedfrombookmarks" + id);
-            });
-            var heart = document.getElementById(id);
-            heart.style.color = "black";
-            var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { AddFilmToBookmark(id) };
-            console.log(icon);
-        }
-        function FilterOn() {
-            var filterTitle = document.getElementById('filter').value
-            var e = document.getElementById("selectionGenres");
-            var filterGenre = e.options[e.selectedIndex].text;
-            window.location.href = "?filterTitle=" + filterTitle + "&filterGenre=" + filterGenre;
-        }
-        function ClearFilter() {
-            window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
-        }
-        function RemoveFromSeen(id) {
-            $.post("/Film/RemoveFromSeen", { id: id }, function () {
-                console.log("removedfromseen" + id);
-            });
-            var seen = document.getElementById("seen-" + id);
-            seen.onclick = function () { AddToSeen(id) };
-            console.log(seen);
-            var icon = document.getElementById("icon-" + id);
-            icon.className = "far fa-eye";
-            console.log(icon);
-            var div = document.getElementById("div-" + id);
-            console.log(div);
-            div.style.backgroundColor = "white";
-        }
-        function AddToSeen(id) {
-            $.post("/Film/AddToSeen", { id: id }, function () {
-                console.log("addedtoseen" + id);
-            });
-            var seen = document.getElementById("seen-" + id);
-            seen.onclick = function () { RemoveFromSeen(id) };
-            var icon = document.getElementById("icon-" + id);
-            icon.className = "far fa-eye-slash";
-            var div = document.getElementById("div-" + id);
-            console.log(div);
-            div.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
-        }
-    </script>
-    <style>
-        .container .row .col-3 p.red-heart {
-            position: absolute;
-            top: 0;
-            right: 10%;
-        }
+        console.log("hidden");
+        var divs = document.getElementsByName("name");
+        divs.forEach(x => x.style.backgroundColor = "rgba(0, 0, 0, 0.85)");
+    }
+    function AddFilmToBookmark(id) {
+        $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
+            console.log("addedtobookmarks" + id);
+        });
+        var heart = document.getElementById(id);
+        heart.style.color = "red";
+        var icon = document.getElementById("icon-heart-" + id);
+        icon.onclick = function () { RemoveFilmFromBookmark(id) };
+        console.log(icon);
+    }
+    function RemoveFilmFromBookmark(id) {
+        $.post("/Bookmark/RemoveFromBookmarks", { id: id }, function () {
+            console.log("removedfrombookmarks" + id);
+        });
+        var heart = document.getElementById(id);
+        heart.style.color = "black";
+        var icon = document.getElementById("icon-heart-" + id);
+        icon.onclick = function () { AddFilmToBookmark(id) };
+        console.log(icon);
+    }
+    function FilterOn() {
+        var filterTitle = document.getElementById('filter').value
+        var e = document.getElementById("selectionGenres");
+        var filterGenre = e.options[e.selectedIndex].text;
+        window.location.href = "?filterTitle=" + filterTitle + "&filterGenre=" + filterGenre;
+    }
+    function ClearFilter() {
+        window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
+    }
+    function RemoveFromSeen(id) {
+        $.post("/Film/RemoveFromSeen", { id: id }, function () {
+            console.log("removedfromseen" + id);
+        });
+        var seen = document.getElementById("seen-" + id);
+        seen.onclick = function () { AddToSeen(id) };
+        console.log(seen);
+        var icon = document.getElementById("icon-" + id);
+        icon.className = "far fa-eye";
+        console.log(icon);
+        var div = document.getElementById("div-" + id);
+        console.log(div);
+        div.style.backgroundColor = "white";
+    }
+    function AddToSeen(id) {
+        $.post("/Film/AddToSeen", { id: id }, function () {
+            console.log("addedtoseen" + id);
+        });
+        var seen = document.getElementById("seen-" + id);
+        seen.onclick = function () { RemoveFromSeen(id) };
+        var icon = document.getElementById("icon-" + id);
+        icon.className = "far fa-eye-slash";
+        var div = document.getElementById("div-" + id);
+        console.log(div);
+        div.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
+    }
+</script>
+<style>
+    .container .row .col-3 p.red-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
 
-        .container .row .col-3:hover p.red-heart {
-            color: red;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.red-heart {
+        color: red;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.grey-heart {
-            position: absolute;
-            top: 0;
-            right: 10%;
-        }
+    .container .row .col-3 p.grey-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
 
-        .container .row .col-3:hover p.grey-heart {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.grey-heart {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.eye {
-            position: absolute;
-            top: 0;
-            left: 10%;
-        }
+    .container .row .col-3 p.eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+    }
 
-        .container .row .col-3:hover p.eye {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.eye {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.slashed-eye {
-            position: absolute;
-            top: 0;
-            left: 10%;
-        }
+    .container .row .col-3 p.slashed-eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+    }
 
-        .container .row .col-3:hover p.slashed-eye {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.slashed-eye {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        div .col-3 .item {
-            width: 100%;
-        }
+    div .col-3 .item {
+        width: 100%;
+    }
 
-            div .col-3 .item a {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                color: black;
-            }
-
-        div .col-3 {
+        div .col-3 .item a {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            color: black;
         }
 
-        img {
+    div .col-3 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    img {
+        width: 100%;
+        height: 320px;
+        display: block;
+    }
+
+
+    .container .row .col-3 div > a > p {
+        font-weight: 600;
+        text-shadow: 2px 2px 8px #FFFFFF;
+    }
+
+    #filter-container {
+        position: fixed;
+        z-index: 1;
+        background-color: white;
+    }
+
+        #filter-container > * {
+            justify-content: space-around;
+            height: 40px;
             width: 100%;
-            height: 320px;
-            display: block;
         }
 
-
-        .container .row .col-3 div > a > p {
-            font-weight: 600;
-            text-shadow: 2px 2px 8px #FFFFFF;
-        }
-
-        #filter-container {
-            position: fixed;
-            z-index: 1;
-            background-color: white;
-        }
-
-            #filter-container > * {
-                justify-content: space-around;
-                height: 40px;
-                width: 100%;
-            }
-    #items{
+    #items {
         padding-top: 5%;
     }
-    </style>
+</style>

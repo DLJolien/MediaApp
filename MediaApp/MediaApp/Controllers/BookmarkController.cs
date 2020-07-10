@@ -17,14 +17,10 @@ namespace MediaApp.Controllers
     public class BookmarkController : Controller
     {
         private readonly MediaDb _dbContext;
-        private readonly IPhotoService _photoService;
-        private readonly SignInManager<User> _signInManager;
 
-        public BookmarkController(MediaDb dbcontext, IPhotoService photoService, SignInManager<User> signInManager)
+        public BookmarkController(MediaDb dbcontext)
         {
             _dbContext = dbcontext;
-            _photoService = photoService;
-            _signInManager = signInManager;
         }
         [Authorize]
         public async Task<IActionResult> Film()
