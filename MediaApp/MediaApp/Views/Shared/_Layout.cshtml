@@ -49,6 +49,29 @@
                                 </div>
                             }
                         }
+                        @{ if (!signInManager.IsSignedIn(User))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Music" asp-action="Index">Music</a>
+                                </li>
+                            }
+                            else if (signInManager.IsSignedIn(User))
+                            {
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Music
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" onclick="RedirectToMusicOverview()">Overview music</a>
+                                        <a class="dropdown-item" onclick="RedirectToBookmarkMusicOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
+                                        <a class="dropdown-item" onclick="RedirectToMusicCreate()">Create music</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="RedirectToPlaylistOverview()">Overview music playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToPlaylistCreate()">Create music playlist</a>
+                                    </div>
+                                </div>
+                            }
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -86,6 +109,21 @@
         }
         function RedirectToBookmarkFilmOverview() {
             window.location.href = "/Bookmark/Film"
+        }
+        function RedirectToMusicOverview() {
+            window.location.href = "/Music/Index"
+        }
+        function RedirectToMusicCreate() {
+            window.location.href = "/Music/Create"
+        }
+        function RedirectToPlaylistCreate() {
+            window.location.href = "/Playlist/Create/?mediaType=Music"
+        }
+        function RedirectToPlaylistOverview() {
+            window.location.href = "/Playlist/Index"
+        }
+        function RedirectToBookmarkMusicOverview() {
+            window.location.href = "/Bookmark/Music"
         }
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

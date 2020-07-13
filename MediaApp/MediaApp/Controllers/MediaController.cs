@@ -5,7 +5,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using MediaApp.Domain;
 using MediaApp.Domain.MediaTypes;
+using MediaApp.Models;
 using MediaApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +17,50 @@ namespace MediaApp.Controllers
     public class MediaController : Controller
     {
         private readonly MediaDb _dbContext;
+        private readonly IPhotoService _photoService;
 
-        public MediaController(MediaDb dbcontext)
+        public MediaController(MediaDb dbcontext, IPhotoService photoService)
         {
             _dbContext = dbcontext;
+            _photoService = photoService;
+        }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Media mediaToDelete = await _dbContext.Media.FindAsync(id);
+            if (User.IsInRole("Admin") || mediaToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                MediaDeleteViewModel vm = new MediaDeleteViewModel()
+                {
+                    Id = mediaToDelete.Id,
+                    Title = mediaToDelete.Title,
+                    ReleaseDate = mediaToDelete.ReleaseDate
+                };
+
+                return View(vm);
+            }
+            else
+            {
+                return LocalRedirect("/Identity/Account/AccessDenied");
+            }
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+            Media mediaToDelete = _dbContext.Media.Find(id);
+            if (User.IsInRole("Admin") || mediaToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                if (!String.IsNullOrEmpty(mediaToDelete.PhotoUrl))
+                {
+                    _photoService.DeletePicture(mediaToDelete.PhotoUrl);
+                }
+                _dbContext.Media.Remove(mediaToDelete);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return (RedirectToAction("Index","Home"));
         }
         public async Task RemoveFromSeen(int id)
         {

@@ -1,0 +1,102 @@
+﻿@using MediaApp.Models.Edit
+
+@model MusicEditViewModel
+    <form asp-controller="Music" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <div class="container">
+            <div class="row">
+                <div class="col-2" align="right">
+                    <label asp-for="Title"></label>
+                </div>
+                <div class="col-4" align="left">
+                    <input asp-for="Title" />
+                    <span class="text-danger" asp-validation-for="Title"></span>
+                </div>
+                <div class="col-2" align="right">
+                    <label asp-for="ReleaseDate">Release Date</label>
+                </div>
+                <div class="col-4" align="left">
+                    <input type="date" asp-for="ReleaseDate" />
+                    <span class="text-danger" asp-validation-for="ReleaseDate"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2" align="right">
+                    <label asp-for="Singer"></label>
+                </div>
+                <div class="col-4" align="left">
+                    <input asp-for="Singer" />
+                </div>
+                <div class="col-2" align="right">
+                    <label asp-for="Duration"></label>
+                </div>
+                <div class="col-4" align="left">
+                    <input asp-for="Duration" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2" align="right">
+                    <label asp-for="Genres">Genre</label>
+                </div>
+                <div class="col-4" align="left">
+                    <select class="browser-default custom-select" asp-for="@Model.SelectedGenreId" asp-items="@Model.Genres">
+                    </select>
+                    <span class="text-danger" asp-validation-for="SelectedGenreId"></span>
+                </div>
+                <div class="col-2" align="right">
+                    <label asp-for="ContentUrl">Link to content</label>
+                </div>
+                <div class="col-4" align="left">
+                    <input asp-for="ContentUrl" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2" align="right">
+                    <label>Accessibility</label>
+                </div>
+                <div class="col-4" align="left">
+                    @Html.RadioButtonFor(m => m.Public, "true") <span>Public</span>
+                    @Html.RadioButtonFor(m => m.Public, "false") <span>Private</span>
+                </div>
+                <div class="col-2" align="right">
+                    <label asp-for="Photo"></label>
+                </div>
+                <div class="col-2" align="left">
+                    <img class="photo-url" src="@Model.PhotoUrl"  />
+                </div>
+                <div class="col-2" align="left">
+                    <input asp-for="Photo" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6" align="right">
+                    <button type="button" class="btn btn-dark" onclick="Return(@Model.Id)">Cancel</button>
+                </div>
+                <div class="col-6" align="left">
+                    <button class="btn btn-info" type="submit">Update music</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <script>
+        function Return(id) {
+            window.location.href = "/Music/Detail?id="+id;
+        }
+    </script>
+    <style>
+        .photo-url{
+            max-width: 150px;
+        }
+        .col-4 > * {
+            width: 100%;
+        }
+
+        #Public {
+            width: 10%;
+        }
+
+        .row {
+            margin-top: 3%;
+        }
+    </style>

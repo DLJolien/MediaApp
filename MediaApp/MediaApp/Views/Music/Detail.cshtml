@@ -1,4 +1,4 @@
-﻿@model FilmDetailViewModel
+﻿@model MediaApp.Models.Detail.MusicDetailViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 @inject UserManager<MediaApp.Domain.User> userManager
@@ -10,11 +10,11 @@
     <div class="Title">
         @Model.Title
     </div>
-    <div class="Director-Label">
-        <strong>Director</strong>
+    <div class="Singer-Label">
+        <strong>Singer</strong>
     </div>
-    <div class="Director-Input">
-        <p>@Model.Director</p>
+    <div class="Singer-Input">
+        <p>@Model.Singer</p>
     </div>
     <div class="Release-Date-Label">
         <strong>Release date</strong>
@@ -59,9 +59,9 @@
     </div>
     <div class="Functions">
         <p>
-            <a asp-controller="film" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
+            <a asp-controller="music" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
             <a asp-controller="media" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |
-            <a asp-controller="film" asp-action="index"> Back to film overview</a>
+            <a asp-controller="music" asp-action="index"> Back to music overview</a>
         </p>
     </div>
 </div>
@@ -215,7 +215,7 @@ else
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 1px 1px;
-        grid-template-areas: "Title Title Title" "Photo Director-Label Director-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+        grid-template-areas: "Title Title Title" "Photo Singer-Label Singer-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
     }
 
     .Photo {
@@ -246,8 +246,8 @@ else
         padding-left: 5%;
     }
 
-    .Director-Label {
-        grid-area: Director-Label;
+    .Singer-Label {
+        grid-area: Singer-Label;
         padding-left: 10%;
         font-size: 20px;
     }
@@ -271,8 +271,8 @@ else
     }
 
 
-    .Director-Input {
-        grid-area: Director-Input;
+    .Singer-Input {
+        grid-area: Singer-Input;
         font-size: 20px;
     }
 

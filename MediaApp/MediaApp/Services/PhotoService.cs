@@ -47,9 +47,17 @@ namespace MediaApp.Services
             {
                 pathToPicture = "film.png";
             }
-            else
+            else if(media.GetType() == typeof(Music))
             {
                 pathToPicture = "music.jpg";
+            }
+            else if(media.GetType() == typeof(Podcast))
+            {
+                pathToPicture = "podcast.png";
+            }
+            else
+            {
+                pathToPicture = "series.png";
             }
 
             media.PhotoUrl = "/icons/" + pathToPicture;

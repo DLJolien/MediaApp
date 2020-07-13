@@ -79,7 +79,6 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Index.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Create.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Detail.cshtml.g.cs
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Delete.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Film\Edit.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Razor.Language.dll
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.dll
@@ -204,3 +203,9 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Edit.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Bookmark\Film.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Admin\Index.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Create.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Delete.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Detail.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Edit.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Index.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Media\Delete.cshtml.g.cs

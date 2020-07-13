@@ -25,7 +25,7 @@ namespace MediaApp.Controllers
         private readonly IPhotoService _photoService;
         private readonly SignInManager<User> _signInManager;
 
-        public FilmController(MediaDb dbcontext, IPhotoService photoService, SignInManager<User> signInManager) : base(dbcontext)
+        public FilmController(MediaDb dbcontext, IPhotoService photoService, SignInManager<User> signInManager) : base(dbcontext, photoService)
         {
             _dbContext = dbcontext;
             _photoService = photoService;
@@ -136,6 +136,7 @@ namespace MediaApp.Controllers
             var genres = await _dbContext.FilmGenres.ToListAsync();
 
             vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
+            vm.Duration = TimeSpan.FromMinutes(120);
 
             return View(vm);
         }
@@ -147,8 +148,8 @@ namespace MediaApp.Controllers
             if (!TryValidateModel(vm))
             {
                 var genres = await _dbContext.FilmGenres.ToListAsync();
-
                 vm.Genres = genres.Select(genre => new SelectListItem() { Value = genre.Id.ToString(), Text = genre.Description }).ToList();
+                vm.Duration = TimeSpan.FromMinutes(120);
 
                 return View(vm);
             }
@@ -238,41 +239,6 @@ namespace MediaApp.Controllers
                 await _dbContext.SaveChangesAsync();
             }
             return RedirectToAction("Detail", new { Id = vm.Id });
-        }
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            Film filmToDelete = await _dbContext.Films.FindAsync(id);
-            if (User.IsInRole("Admin") || filmToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                MediaDeleteViewModel vm = new MediaDeleteViewModel()
-                {
-                    Id = filmToDelete.Id,
-                    Title = filmToDelete.Title,
-                    ReleaseDate = filmToDelete.ReleaseDate
-                };
-
-                return View(vm);
-            }
-            else
-            {
-                return LocalRedirect("/Identity/Account/AccessDenied");
-            }
-        }
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> ConfirmDelete(int id)
-        {
-            Film filmToDelete = _dbContext.Films.Find(id);
-            if (User.IsInRole("Admin") || filmToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-            {
-                _photoService.DeletePicture(filmToDelete.PhotoUrl);
-                _dbContext.Films.Remove(filmToDelete);
-                await _dbContext.SaveChangesAsync();
-            }
-
-            return (RedirectToAction("Index"));
-        }
+        }       
     }
 }
