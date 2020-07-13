@@ -82,6 +82,19 @@
                                         <a class="dropdown-item" onclick="RedirectToPodcastPlaylistCreate()">Create podcast playlist</a>
                                     </div>
                                 </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Series
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" onclick="RedirectToSeriesOverview()">Overview series</a>
+                                        <a class="dropdown-item" onclick="RedirectToBookmarkSeriesOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
+                                        <a class="dropdown-item" onclick="RedirectToSeriesCreate()">Create series</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="RedirectToSeriesPlaylistOverview()">Overview series playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToSeriesPlaylistCreate()">Create series playlist</a>
+                                    </div>
+                                </div>
                             }
                         }
                         @if (User.IsInRole("Admin"))
@@ -151,6 +164,21 @@
         }
         function RedirectToBookmarkPodcastOverview() {
             window.location.href = "/Bookmark/Podcast"
+        }
+        function RedirectToSeriesOverview() {
+            window.location.href = "/Series/Index"
+        }
+        function RedirectToSeriesCreate() {
+            window.location.href = "/Series/Create"
+        }
+        function RedirectToSeriesPlaylistCreate() {
+            window.location.href = "/Playlist/Create/?mediaType=Series"
+        }
+        function RedirectToSeriesPlaylistOverview() {
+            window.location.href = "/Playlist/Series"
+        }
+        function RedirectToBookmarkSeriesOverview() {
+            window.location.href = "/Bookmark/Series"
         }
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
