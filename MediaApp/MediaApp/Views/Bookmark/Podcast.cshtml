@@ -3,12 +3,12 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-<h1>My bookmarked films</h1>
+<h1>My bookmarked podcasts</h1>
 
 <div id="filter-container" class="container">
     <div class="row">
         <div class="col-9">
-            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on podcast title" />
         </div>
 
         <div class="col">
@@ -26,37 +26,37 @@
     @{if (Model.Count() == 0)
         {
             <div class="row">
-                There is currently no music bookmarked.
+                There are currently no podcasts bookmarked.
             </div>
         }
         else
         {
             <div id="items" class="container">
                 <div class="row">
-                    @foreach (var film in Model)
+                    @foreach (var podcast in Model)
                     {
-                        <div id="div-@film.Id" class="col-3" name="@film.Seen">
+                        <div id="div-@podcast.Id" class="col-3" name="@podcast.Seen">
                             <div class="item">
-                                @if (film.Seen)
+                                @if (podcast.Seen)
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye-slash"></i></p>
+                                    <p id="seen-@podcast.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@podcast.Id)"><i id="icon-@podcast.Id" class="far fa-eye-slash"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="eye" onclick="AddToSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye"></i></p>
+                                    <p id="seen-@podcast.Id" name="eye" class="eye" onclick="AddToSeen(@podcast.Id)"><i id="icon-@podcast.Id" class="far fa-eye"></i></p>
                                 }
 
-                                @if (film.Bookmarked)
+                                @if (podcast.Bookmarked)
                                 {
-                                    <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id" onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@podcast.Id" class="red-heart" name="heart"><i id="icon-heart-@podcast.Id" onclick="RemovePodcastFromBookmark(@podcast.Id)" class="fas fa-heart"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id" onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@podcast.Id" class="grey-heart" name="heart"><i id="icon-heart-@podcast.Id" onclick="AddPodcastToBookmark(@podcast.Id)" class="fas fa-heart"></i></p>
                                 }
-                                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                    <img src="@film.PhotoUrl" />
-                                    <p>@film.Title - @film.ReleaseDate.Year</p>
+                                <a asp-controller="podcast" asp-action="detail" asp-route-id="@podcast.Id">
+                                    <img src="@podcast.PhotoUrl" />
+                                    <p>@podcast.Title - @podcast.ReleaseDate.Year</p>
                                 </a>
 
                             </div>
@@ -67,9 +67,9 @@
 
         }
     }
-    </div>
-    <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
-    <script>
+</div>
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<script>
         window.onload = function () {
             var hearts = document.getElementsByName("heart");
             console.log(hearts);
@@ -83,29 +83,29 @@
             var divs = document.getElementsByName("name");
             divs.forEach(x => x.style.backgroundColor = "rgba(0, 0, 0, 0.85)");
         }
-        function AddFilmToBookmark(id) {
+        function AddPodcastToBookmark(id) {
             $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
                 console.log("addedtobookmarks" + id);
             });
             var heart = document.getElementById(id);
             heart.style.color = "red";
             var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { RemoveFilmFromBookmark(id) };
+            icon.onclick = function () { RemovePodcastFromBookmark(id) };
             console.log(icon);
         }
-        function RemoveFilmFromBookmark(id) {
+        function RemovePodcastFromBookmark(id) {
             $.post("/Bookmark/RemoveFromBookmarks", { id: id }, function () {
                 console.log("removedfrombookmarks" + id);
             });
             var heart = document.getElementById(id);
             heart.style.color = "black";
             var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { AddFilmToBookmark(id) };
+            icon.onclick = function () { AddPodcastToBookmark(id) };
             console.log(icon);
         }
         function FilterOn() {
             var filter = document.getElementById('filter').value
-            window.location.href = "?filter=" + filter;
+            window.location.href = "?filter=" + filter ;
         }
         function ClearFilter() {
             window.location.href = "?filter=";
@@ -136,98 +136,98 @@
             console.log(div);
             div.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
         }
-    </script>
-    <style>
-        .container .row .col-3 p.red-heart {
-            position: absolute;
-            top: 0;
-            right: 10%;
-        }
+</script>
+<style>
+    .container .row .col-3 p.red-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
 
-        .container .row .col-3:hover p.red-heart {
-            color: red;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.red-heart {
+        color: red;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.grey-heart {
-            position: absolute;
-            top: 0;
-            right: 10%;
-        }
+    .container .row .col-3 p.grey-heart {
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
 
-        .container .row .col-3:hover p.grey-heart {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.grey-heart {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.eye {
-            position: absolute;
-            top: 0;
-            left: 10%;
-        }
+    .container .row .col-3 p.eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+    }
 
-        .container .row .col-3:hover p.eye {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.eye {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        .container .row .col-3 p.slashed-eye {
-            position: absolute;
-            top: 0;
-            left: 10%;
-        }
+    .container .row .col-3 p.slashed-eye {
+        position: absolute;
+        top: 0;
+        left: 10%;
+    }
 
-        .container .row .col-3:hover p.slashed-eye {
-            color: black;
-            visibility: visible !important;
-            cursor: pointer;
-        }
+    .container .row .col-3:hover p.slashed-eye {
+        color: black;
+        visibility: visible !important;
+        cursor: pointer;
+    }
 
-        div .col-3 .item {
-            width: 100%;
-        }
+    div .col-3 .item {
+        width: 100%;
+    }
 
-            div .col-3 .item a {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                color: black;
-            }
-
-        div .col-3 {
+        div .col-3 .item a {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            color: black;
         }
 
-        img {
+    div .col-3 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    img {
+        width: 100%;
+        height: 320px;
+        display: block;
+    }
+
+
+    .container .row .col-3 div > a > p {
+        font-weight: 600;
+        text-shadow: 2px 2px 8px #FFFFFF;
+    }
+
+    #filter-container {
+        position: fixed;
+        z-index: 1;
+        background-color: white;
+    }
+
+        #filter-container > * {
+            justify-content: space-around;
+            height: 40px;
             width: 100%;
-            height: 320px;
-            display: block;
         }
 
-
-        .container .row .col-3 div > a > p {
-            font-weight: 600;
-            text-shadow: 2px 2px 8px #FFFFFF;
-        }
-
-        #filter-container {
-            position: fixed;
-            z-index: 1;
-            background-color: white;
-        }
-
-            #filter-container > * {
-                justify-content: space-around;
-                height: 40px;
-                width: 100%;
-            }
-
-        #items {
-            padding-top: 5%;
-        }
-    </style>
+    #items {
+        padding-top: 5%;
+    }
+</style>

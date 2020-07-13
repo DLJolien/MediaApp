@@ -8,7 +8,7 @@
 <div id="filter-container" class="container">
     <div class="row">
         <div class="col-9">
-            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on music title" />
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on song title" />
         </div>
 
         <div class="col">
@@ -104,13 +104,11 @@
             console.log(icon);
         }
         function FilterOn() {
-            var filterTitle = document.getElementById('filter').value
-            var e = document.getElementById("selectionGenres");
-            var filterGenre = e.options[e.selectedIndex].text;
-            window.location.href = "?filterTitle=" + filterTitle + "&filterGenre=" + filterGenre;
+            var filter = document.getElementById('filter').value
+            window.location.href = "?filter=" + filter;
         }
         function ClearFilter() {
-            window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
+            window.location.href = "?filter=";
         }
         function RemoveFromSeen(id) {
             $.post("/Media/RemoveFromSeen", { id: id }, function () {

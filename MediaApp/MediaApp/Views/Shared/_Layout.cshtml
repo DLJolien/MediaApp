@@ -31,6 +31,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Film" asp-action="Index">Films</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Music" asp-action="Index">Music</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Podcast" asp-action="Index">Podcasts</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Series" asp-action="Index">Series</a>
+                                </li>
                             }
                             else if (signInManager.IsSignedIn(User))
                             {
@@ -47,16 +56,6 @@
                                         <a class="dropdown-item" onclick="RedirectToFilmPlaylistCreate()">Create film playlist</a>
                                     </div>
                                 </div>
-                            }
-                        }
-                        @{ if (!signInManager.IsSignedIn(User))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Music" asp-action="Index">Music</a>
-                                </li>
-                            }
-                            else if (signInManager.IsSignedIn(User))
-                            {
                                 <div class="dropdown">
                                     <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Music
@@ -68,6 +67,19 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" onclick="RedirectToMusicPlaylistOverview()">Overview music playlists</a>
                                         <a class="dropdown-item" onclick="RedirectToMusicPlaylistCreate()">Create music playlist</a>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Podcast
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" onclick="RedirectToPodcastOverview()">Overview podcast</a>
+                                        <a class="dropdown-item" onclick="RedirectToBookmarkPodcastOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
+                                        <a class="dropdown-item" onclick="RedirectToPodcastCreate()">Create podcast</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" onclick="RedirectToPodcastPlaylistOverview()">Overview podcast playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToPodcastPlaylistCreate()">Create podcast playlist</a>
                                     </div>
                                 </div>
                             }
@@ -124,6 +136,21 @@
         }
         function RedirectToBookmarkMusicOverview() {
             window.location.href = "/Bookmark/Music"
+        }
+        function RedirectToPodcastOverview() {
+            window.location.href = "/Podcast/Index"
+        }
+        function RedirectToPodcastCreate() {
+            window.location.href = "/Podcast/Create"
+        }
+        function RedirectToPodcastPlaylistCreate() {
+            window.location.href = "/Playlist/Create/?mediaType=Podcast"
+        }
+        function RedirectToPodcastPlaylistOverview() {
+            window.location.href = "/Playlist/Podcast"
+        }
+        function RedirectToBookmarkPodcastOverview() {
+            window.location.href = "/Bookmark/Podcast"
         }
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

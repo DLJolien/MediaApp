@@ -1,16 +1,24 @@
-﻿@using MediaApp.Models.Index
-@model IEnumerable<BookmarkListViewModel>
+﻿@model IEnumerable<MediaListViewModel>
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-<h1>My bookmarked films</h1>
-
 <div id="filter-container" class="container">
     <div class="row">
-        <div class="col-9">
-            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+        <div class="col-6">
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on podcast title" />
         </div>
-
+        <div class="col-3">
+            @{
+                var genres = Model.Select(x => x.Genre).Distinct();
+            }
+            <select class="browser-default custom-select" id="selectionGenres">
+                <option selected>Choose a genre</option>
+                @foreach (var genre in genres)
+                {
+                    <option>@genre</option>
+                }
+            </select>
+        </div>
         <div class="col">
             <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
         </div>
@@ -20,54 +28,53 @@
     </div>
 </div>
 
-
-
 <div id="items" class="container">
+
     @{if (Model.Count() == 0)
         {
             <div class="row">
-                There is currently no music bookmarked.
+                There are currently no podcasts listed.
             </div>
         }
         else
         {
-            <div id="items" class="container">
-                <div class="row">
-                    @foreach (var film in Model)
-                    {
-                        <div id="div-@film.Id" class="col-3" name="@film.Seen">
-                            <div class="item">
-                                @if (film.Seen)
+            <div class="row">
+                @foreach (var podcast in Model)
+                {
+                    <div id="div-@podcast.Id" class="col-3" name="@podcast.Seen">
+                        <div class="item">
+
+                            @if (signInManager.IsSignedIn(User))
+                            {
+                                @if (podcast.Seen)
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye-slash"></i></p>
+                                    <p id="seen-@podcast.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@podcast.Id)"><i id="icon-@podcast.Id" class="far fa-eye-slash"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="eye" onclick="AddToSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye"></i></p>
+                                    <p id="seen-@podcast.Id" name="eye" class="eye" onclick="AddToSeen(@podcast.Id)"><i id="icon-@podcast.Id" class="far fa-eye"></i></p>
                                 }
 
-                                @if (film.Bookmarked)
+                                @if (podcast.Bookmarked)
                                 {
-                                    <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id" onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@podcast.Id" class="red-heart" name="heart"><i id="icon-heart-@podcast.Id" onclick="RemoveFilmFromBookmark(@podcast.Id)" class="fas fa-heart"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id" onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@podcast.Id" class="grey-heart" name="heart"><i id="icon-heart-@podcast.Id" onclick="AddFilmToBookmark(@podcast.Id)" class="fas fa-heart"></i></p>
                                 }
-                                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                    <img src="@film.PhotoUrl" />
-                                    <p>@film.Title - @film.ReleaseDate.Year</p>
-                                </a>
-
-                            </div>
+                            }
+                            <a asp-controller="podcast" asp-action="detail" asp-route-id="@podcast.Id">
+                                <img src="@podcast.PhotoUrl" />
+                                <p>@podcast.Title - @podcast.ReleaseDate.Year</p>
+                            </a>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
-
         }
     }
-    </div>
+</div>
     <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
     <script>
         window.onload = function () {
@@ -104,11 +111,13 @@
             console.log(icon);
         }
         function FilterOn() {
-            var filter = document.getElementById('filter').value
-            window.location.href = "?filter=" + filter;
+            var filterTitle = document.getElementById('filter').value
+            var e = document.getElementById("selectionGenres");
+            var filterGenre = e.options[e.selectedIndex].text;
+            window.location.href = "?filterTitle=" + filterTitle + "&filterGenre=" + filterGenre;
         }
         function ClearFilter() {
-            window.location.href = "?filter=";
+            window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
         }
         function RemoveFromSeen(id) {
             $.post("/Media/RemoveFromSeen", { id: id }, function () {

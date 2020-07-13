@@ -1,0 +1,304 @@
+﻿@model MediaApp.Models.Detail.PodcastDetailViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MediaApp.Domain.User> signInManager
+@inject UserManager<MediaApp.Domain.User> userManager
+
+<div class="grid-container">
+    <div class="Photo">
+        <img src="@Model.PhotoUrl" class="photo-url" />
+    </div>
+    <div class="Title">
+        @Model.Title
+    </div>
+    <div class="Organisation-Label">
+        <strong>Organisation</strong>
+    </div>
+    <div class="Organisation-Input">
+        <p>@Model.Organisation</p>
+    </div>
+    <div class="Release-Date-Label">
+        <strong>Release date</strong>
+    </div>
+    <div class="Release-Date-Input">
+        <p>@Model.ReleaseDate.ToShortDateString()</p>
+    </div>
+    <div class="Duration-Label">
+        <strong>Duration</strong>
+    </div>
+    <div class="Duration-Input">
+        <p>@Model.Duration</p>
+    </div>
+    <div class="Genre-Label">
+        <strong>Genre</strong>
+    </div>
+    <div class="Genre-Input">
+        <p>@Model.Genre</p>
+    </div>
+    <div class="Accessibility-Label">
+        <strong>Accessibility</strong>
+    </div>
+    <div class="Accessibility-Input">
+        @if (@Model.Public)
+        {
+            <p>Public</p>
+        }
+        else
+        {
+            <p>Private</p>
+        }
+    </div>
+
+
+    <div class="View-Content">
+        @if (!String.IsNullOrEmpty(@Model.ContentUrl))
+        {
+            <form action="@Model.ContentUrl">
+                <input type="submit" value="View Content" />
+            </form>
+        }
+    </div>
+    <div class="Functions">
+        <p>
+            <a asp-controller="podcast" asp-action="edit" asp-route-id="@Model.Id"> Edit</a> |
+            <a asp-controller="media" asp-action="delete" asp-route-id="@Model.Id"> Delete</a> |
+            <a asp-controller="podcast" asp-action="index"> Back to podcast overview</a>
+        </p>
+    </div>
+</div>
+@if (signInManager.IsSignedIn(User))
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-10" align="left">
+                Post as @((await userManager.GetUserAsync(User)).UserName.Split('@')[0])
+            </div>
+        </div>
+        <div id="comment-row" class="row">
+            <div id="photo-col" class="col-2" align="right">
+                <img id="input-comment-user-photo" src="@((await userManager.GetUserAsync(User)).PhotoUrl)">
+            </div>
+            <div class="col-10" align="left">
+                <textarea id="comment-text" placeholder="Write your comment here..." rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" align="right">
+                <button onclick="SubmitComment(@Model.Id)" class="btn btn-info" type="submit"> Comment</button>
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <p>You need to sign in first in order to comment.</p>
+}
+
+
+<div id="comments">
+    @if (Model.Comments.Count == 0)
+    {
+        <h2>Comments</h2>
+        <p>No comments have been posted yet.</p>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-12" align="left">
+                    <h2>@Model.Comments.Count Comments</h2>
+                </div>
+            </div>
+
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="row">
+                    <div class="col-2">
+                    </div>
+                    <div class="col-5">
+                        @comment.User.UserName.Split('@')[0]
+                    </div>
+                    <div class="col-5" align="right">
+                        @{
+                            var timepassed = DateTime.Now - comment.PublishedDate;
+                            if (Math.Round(timepassed.TotalSeconds) < 60)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalSeconds) seconds ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalMinutes) < 60)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalMinutes) minutes ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalHours) < 24)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalHours) hours ago</p>
+                            }
+                            else if (Math.Round(timepassed.TotalDays) < 30)
+                            {
+                                <p>posted @Math.Round(timepassed.TotalDays) days ago</p>
+                            }
+                            else if (Math.Ceiling(timepassed.TotalDays / 30) < 2)
+                            {
+                                <p>posted @Math.Ceiling(timepassed.TotalDays / 30) days ago</p>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2" align="right">
+                        <img id="posted-comment-url" src="@comment.User.PhotoUrl" class="photo-url" />
+                    </div>
+                    <div class="col-10">
+                        @comment.Description
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    async function SubmitComment(id) {
+        var comment = document.getElementById("comment-text");
+        await $.post("/Media/Comment", { id: id, comment: comment.value }, function () {
+            console.log("posted comment: " + comment.value);
+        });
+        comment.value = "Your comment is awaiting approval";
+    }
+</script>
+
+<style>
+    #comment-row {
+        height: 30%;
+    }
+
+    #photo-col {
+        height: 30%;
+    }
+    #posted-comment-url {
+        width: 30%;
+    }
+
+    #comment-text {
+        width: 100%;
+    }
+
+    #input-comment-user-photo {
+        width: 50%;
+        height: 15%;
+    }
+
+    .View-Content form {
+        width: 100%;
+    }
+
+        .View-Content form input {
+            width: 100%;
+            height: 100%;
+        }
+
+    .photo-url {
+        max-width: 400px;
+        max-height: 7fr;
+    }
+
+    div .col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1px 1px;
+        grid-template-areas: "Title Title Title" "Photo Organisation-Label Organisation-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+    }
+
+    .Photo {
+        display: flex;
+        justify-content: center;
+        grid-area: Photo;
+    }
+
+    .Title {
+        display: flex;
+        justify-content: center;
+        grid-area: Title;
+        font-size: 40px;
+        letter-spacing: 2px;
+    }
+
+    .Functions {
+        grid-area: Functions;
+        display: flex;
+        justify-content: center;
+    }
+
+    .View-Content {
+        display: flex;
+        justify-content: center;
+        grid-area: View-Content;
+        font-size: 20px;
+        padding-left: 5%;
+    }
+
+    .Organisation-Label {
+        grid-area: Organisation-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Release-Date-Label {
+        grid-area: Release-Date-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Duration-Label {
+        grid-area: Duration-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+    .Genre-Label {
+        grid-area: Genre-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+
+
+    .Organisation-Input {
+        grid-area: Organisation-Input;
+        font-size: 20px;
+    }
+
+    .Release-Date-Input {
+        grid-area: Release-Date-Input;
+        font-size: 20px;
+    }
+
+    .Duration-Input {
+        grid-area: Duration-Input;
+        font-size: 20px;
+    }
+
+    .Genre-Input {
+        grid-area: Genre-Input;
+        font-size: 20px;
+    }
+
+    .Accessibility-Input {
+        grid-area: Accessibility-Input;
+        font-size: 20px;
+    }
+
+    .Accessibility-Label {
+        grid-area: Accessibility-Label;
+        padding-left: 10%;
+        font-size: 20px;
+    }
+</style>
