@@ -119,7 +119,7 @@
         window.location.href = "?filterTitle=&filterGenre=Choose+a+genre";
     }
     function RemoveFromSeen(id) {
-        $.post("/Film/RemoveFromSeen", { id: id }, function () {
+        $.post("/Media/RemoveFromSeen", { id: id }, function () {
             console.log("removedfromseen" + id);
         });
         var seen = document.getElementById("seen-" + id);
@@ -133,7 +133,7 @@
         div.style.backgroundColor = "white";
     }
     function AddToSeen(id) {
-        $.post("/Film/AddToSeen", { id: id }, function () {
+        $.post("/Media/AddToSeen", { id: id }, function () {
             console.log("addedtoseen" + id);
         });
         var seen = document.getElementById("seen-" + id);

@@ -162,7 +162,7 @@ else
 <script>
     async function SubmitComment(id) {
         var comment = document.getElementById("comment-text");
-        await $.post("/Film/Comment", { id: id, comment: comment.value }, function () {
+        await $.post("/Media/Comment", { id: id, comment: comment.value }, function () {
             console.log("posted comment: " + comment.value);
         });
         comment.value = "Your comment is awaiting approval";
