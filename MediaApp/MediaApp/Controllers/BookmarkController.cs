@@ -29,7 +29,7 @@ namespace MediaApp.Controllers
             Playlist<Media> bookmarkPlaylist;
             if (user.BookmarkedFilmsId == 0)
             {
-                bookmarkPlaylist = CreateBookmarkList("Bookmarked films").Result;
+                bookmarkPlaylist = await CreateBookmarkList("Bookmarked films");
                 user.BookmarkedFilmsId = bookmarkPlaylist.Id;
 
             }
@@ -52,23 +52,41 @@ namespace MediaApp.Controllers
                 return View(vmList);
        
         }
+        public async Task<IActionResult> Music()
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Playlist<Media> bookmarkPlaylist;
+            if (user.BookmarkedMusicId == 0)
+            {
+                bookmarkPlaylist = await CreateBookmarkList("Bookmarked music");
+                user.BookmarkedMusicId = bookmarkPlaylist.Id;
+
+            }
+            else
+            {
+                bookmarkPlaylist = await _dbContext.Playlists.FirstOrDefaultAsync(x => x.Id == user.BookmarkedMusicId);
+            }
+            IEnumerable<Media> bookmarkedMedia = _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == bookmarkPlaylist.Id).Select(x => x.Media).OrderByDescending(music => music.ReleaseDate);
+
+            List<BookmarkListViewModel> vmList = bookmarkedMedia.Select(x => new BookmarkListViewModel()
+            {
+                Id = x.Id,
+                Title = x.Title,
+                ReleaseDate = x.ReleaseDate,
+                Bookmarked = _dbContext.PlaylistMedias.AnyAsync(y => y.MediaId == x.Id && (y.PlaylistId == user.BookmarkedFilmsId || y.PlaylistId == user.BookmarkedPodcastId || y.PlaylistId == user.BookmarkedSeriesId || y.PlaylistId == user.BookmarkedMusicId)).Result,
+                Seen = _dbContext.MediaSeens.AnyAsync(z => z.MediaId == x.Id && z.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Result,
+                PhotoUrl = x.PhotoUrl,
+            }).ToList();
+
+            return View(vmList);
+
+        }
         [Authorize]
         [HttpPost]
         public async Task SaveToBookmarks(int id)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            Playlist<Media> bookmarkPlaylist;
 
-            if (user.BookmarkedFilmsId == 0)
-            {
-                bookmarkPlaylist = CreateBookmarkList("Bookmarked films").Result;
-                user.BookmarkedFilmsId = bookmarkPlaylist.Id;   
-                
-            }
-            else
-            {
-                bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedFilmsId).FirstOrDefault();
-            }
+            Playlist<Media> bookmarkPlaylist = await GetBookmarkPlaylist(id);
 
             if (!await _dbContext.PlaylistMedias.AnyAsync(x => x.MediaId == id && x.PlaylistId == bookmarkPlaylist.Id))
             {
@@ -80,9 +98,7 @@ namespace MediaApp.Controllers
         [HttpPost]
         public async Task RemoveFromBookmarks(int id)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            Playlist<Media> bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedFilmsId).FirstOrDefault();
+            Playlist<Media> bookmarkPlaylist = await GetBookmarkPlaylist(id);
 
             PlaylistMedia playlistMedia = await _dbContext.PlaylistMedias.Where(x => x.MediaId == id && x.PlaylistId == bookmarkPlaylist.Id).FirstOrDefaultAsync();
 
@@ -102,6 +118,62 @@ namespace MediaApp.Controllers
             _dbContext.Playlists.Add(newBookmarkedFilmsList);
             await _dbContext.SaveChangesAsync();
             return newBookmarkedFilmsList;
+        }
+        private async Task<Playlist<Media>> GetBookmarkPlaylist(int id)
+        {
+            User user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Playlist<Media> bookmarkPlaylist;
+            Media mediaToAdd = await _dbContext.Media.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (mediaToAdd.GetType() == typeof(Film))
+            {
+                if (user.BookmarkedFilmsId == 0)
+                {
+                    bookmarkPlaylist = await CreateBookmarkList("Bookmarked films");
+                    user.BookmarkedFilmsId = bookmarkPlaylist.Id;
+                }
+                else
+                {
+                    bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedFilmsId).FirstOrDefault();
+                }
+            }
+            else if (mediaToAdd.GetType() == typeof(Music))
+            {
+                if (user.BookmarkedMusicId == 0)
+                {
+                    bookmarkPlaylist = await CreateBookmarkList("Bookmarked music");
+                    user.BookmarkedMusicId = bookmarkPlaylist.Id;
+                }
+                else
+                {
+                    bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedMusicId).FirstOrDefault();
+                }
+            }
+            else if (mediaToAdd.GetType() == typeof(Podcast))
+            {
+                if (user.BookmarkedPodcastId == 0)
+                {
+                    bookmarkPlaylist = await CreateBookmarkList("Bookmarked podcasts");
+                    user.BookmarkedPodcastId = bookmarkPlaylist.Id;
+                }
+                else
+                {
+                    bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedPodcastId).FirstOrDefault();
+                }
+            }
+            else
+            {
+                if (user.BookmarkedSeriesId == 0)
+                {
+                    bookmarkPlaylist = await CreateBookmarkList("Bookmarked series");
+                    user.BookmarkedSeriesId = bookmarkPlaylist.Id;
+                }
+                else
+                {
+                    bookmarkPlaylist = _dbContext.Playlists.Where(x => x.Id == user.BookmarkedSeriesId).FirstOrDefault();
+                }
+            }
+            return bookmarkPlaylist;
         }
     }
 }

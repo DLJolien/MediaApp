@@ -1,9 +1,9 @@
-﻿@model MediaApp.Models.Create.PlaylistAddFilmViewModel
+﻿@model MediaApp.Models.Create.PlaylistManageItemsViewModel
 
 <div class="container">
     <div class="row">
         <div class="col-9">
-            <h1>Add some films to your playlist...</h1>
+            <h1>Add some items to your playlist...</h1>
         </div>
         <div class="col-3" align="right">
             <button class="btn btn-info" onclick="Redirect()">
@@ -20,7 +20,7 @@
     </div>
     <div id="filter-container" class="row">
         <div class="col-9" align="left">
-            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on title" />
         </div>
         <div class="col-3" align="right">
             <button onclick="FilterOn(@Model.PlaylistId)" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
@@ -30,7 +30,7 @@
 </div>
 <div id="items" class="container">
 @{
-    foreach (var media in Model.AllFilmsInLibrary)
+    foreach (var media in Model.AllItemsInLibrary)
     {
         <div class="row align-content-center">
 
@@ -38,13 +38,13 @@
                 @if (Model.AlreadyIncluded.Contains(media))
                 {
 
-                    <form asp-controller="Playlist" asp-action="RemoveFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                    <form asp-controller="Playlist" asp-action="RemoveItem" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" asp-route-type="@Model.Type"method="post">
                         <button class="btn btn-danger" type="submit"><i class="fas fa-minus"></i> </button>
                     </form>
                 }
                 else
                 {
-                    <form asp-controller="Playlist" asp-action="AddFilm" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" method="post">
+                    <form asp-controller="Playlist" asp-action="AddItem" asp-route-playlistId="@Model.PlaylistId" asp-route-mediaId="@media.Id" asp-route-type="@Model.Type" method="post">
                         <button class="btn btn-success" type="submit"><i class="fas fa-plus"></i> </button>
                     </form>
                 }

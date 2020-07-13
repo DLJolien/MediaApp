@@ -196,8 +196,6 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\bin\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.csproj.CoreCompileInputs.cache
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\MediaApp.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\ManageFilms.cshtml.g.cs
-C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Index.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Detail.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Delete.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Edit.cshtml.g.cs
@@ -209,3 +207,7 @@ C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Edit.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Music\Index.cshtml.g.cs
 C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Media\Delete.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Bookmark\Music.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Film.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\Music.cshtml.g.cs
+C:\Users\Jolien\source\repos\MediaApp\MediaApp\MediaApp\obj\Debug\netcoreapp3.1\Razor\Views\Playlist\ManageItems.cshtml.g.cs

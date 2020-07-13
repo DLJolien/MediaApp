@@ -43,8 +43,8 @@
                                         <a class="dropdown-item" onclick="RedirectToBookmarkFilmOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
                                         <a class="dropdown-item" onclick="RedirectToFilmCreate()">Create film</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" onclick="RedirectToPlaylistOverview()">Overview film playlists</a>
-                                        <a class="dropdown-item" onclick="RedirectToPlaylistCreate()">Create film playlist</a>
+                                        <a class="dropdown-item" onclick="RedirectToFilmPlaylistOverview()">Overview film playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToFilmPlaylistCreate()">Create film playlist</a>
                                     </div>
                                 </div>
                             }
@@ -66,8 +66,8 @@
                                         <a class="dropdown-item" onclick="RedirectToBookmarkMusicOverview(@userManager.GetUserAsync(User).Result.BookmarkedFilmsId)">My Bookmarks <i class="fas fa-heart"></i> </a>
                                         <a class="dropdown-item" onclick="RedirectToMusicCreate()">Create music</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" onclick="RedirectToPlaylistOverview()">Overview music playlists</a>
-                                        <a class="dropdown-item" onclick="RedirectToPlaylistCreate()">Create music playlist</a>
+                                        <a class="dropdown-item" onclick="RedirectToMusicPlaylistOverview()">Overview music playlists</a>
+                                        <a class="dropdown-item" onclick="RedirectToMusicPlaylistCreate()">Create music playlist</a>
                                     </div>
                                 </div>
                             }
@@ -101,11 +101,11 @@
         function RedirectToFilmCreate() {
             window.location.href = "/Film/Create"
         }
-        function RedirectToPlaylistCreate() {
+        function RedirectToFilmPlaylistCreate() {
             window.location.href = "/Playlist/Create/?mediaType=Film"
         }
-        function RedirectToPlaylistOverview() {
-            window.location.href = "/Playlist/Index"
+        function RedirectToFilmPlaylistOverview() {
+            window.location.href = "/Playlist/Film"
         }
         function RedirectToBookmarkFilmOverview() {
             window.location.href = "/Bookmark/Film"
@@ -116,11 +116,11 @@
         function RedirectToMusicCreate() {
             window.location.href = "/Music/Create"
         }
-        function RedirectToPlaylistCreate() {
+        function RedirectToMusicPlaylistCreate() {
             window.location.href = "/Playlist/Create/?mediaType=Music"
         }
-        function RedirectToPlaylistOverview() {
-            window.location.href = "/Playlist/Index"
+        function RedirectToMusicPlaylistOverview() {
+            window.location.href = "/Playlist/Music"
         }
         function RedirectToBookmarkMusicOverview() {
             window.location.href = "/Bookmark/Music"

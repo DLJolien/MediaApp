@@ -1,0 +1,122 @@
+﻿@using MediaApp.Models.Index
+@model IEnumerable<PlaylistListViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MediaApp.Domain.User> signInManager
+@inject UserManager<MediaApp.Domain.User> userManager
+
+<div class="container">
+    <div id="filter-container" class="row">
+        <div class="col-9" align="left">
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on playlist title or creator" />
+        </div>
+        <div class="col-3" align="right">
+            <button onclick="FilterOn()" id="btn" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            <button onclick="ClearFilter()" id="btn-clear" class="btn btn-dark">Remove filter</button>
+        </div>
+    </div>
+</div>
+
+@{if (Model.Count() == 0)
+    {
+        <br />
+        <strong>There are currently no playlist listed.</strong>
+    }
+    else
+    {
+        <div class="container">
+            <div id="menu-items" class="row">
+                <div class="col-6">
+                    Title
+                </div>
+                <div class="col-2">
+                    Duration
+                </div>
+                <div class="col">
+                    Amount
+                </div>
+                <div class="col-2">
+                    Creator
+                </div>
+                <div class="col">
+                    Menu
+                </div>
+            </div>
+
+            @foreach (PlaylistListViewModel playlist in Model)
+            {
+                <div class="row" id="items">
+                    <div class="col-6">
+                        @playlist.Title
+                    </div>
+                    <div class="col-2">
+                        @playlist.Duration
+                    </div>
+                    <div class="col">
+                        @playlist.PlaylistMedias.Count
+                    </div>
+                    <div class="col-2">
+                        @playlist.User.UserName.Split('@')[0]
+                    </div>
+                    <div class="col">
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @if (userManager.GetUserId(User) == @playlist.User.Id || User.IsInRole("Admin"))
+                                    {
+                                        <a class="dropdown-item" onclick="GoToEdit(@playlist.Id)">Edit info</a>
+                                        <a class="dropdown-item" onclick="GoToManageItems(@playlist.Id)">Edit items</a>
+                                        <a class="dropdown-item" onclick="GoToDelete(@playlist.Id)">Delete</a>
+                                    }
+                                    <a class="dropdown-item" onclick="GoToDetail(@playlist.Id)">View details</a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+    }
+}
+
+<script>
+    function GoToDetail(id) {
+        window.location.href = "Detail/?id=" + id;
+    }
+    function GoToManageItems(id) {
+        window.location.href = "/Playlist/ManageItems/?id=" + id +"&type=Music";
+    }
+    function FilterOn() {
+        var filter = document.getElementById('filter').value
+        window.location.href = "?filter=" + filter;
+    }
+    function GoToDelete(id) {
+        window.location.href = "/Playlist/Delete/?id=" + id;
+    }
+    function GoToEdit(id) {
+        window.location.href = "/Playlist/Edit/?id=" + id;
+    }
+    function ClearFilter(id) {
+        window.location.href = "?filter=";
+    }
+</script>
+<script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
+<style>
+    #menu-items {
+        font-weight: 600;
+    }
+
+    #items:hover {
+        background-color: lightgray;
+    }
+
+    .btn-secondary {
+        background-color: lightgray;
+        border-color: lightgray;
+    }
+</style>

@@ -72,12 +72,12 @@
             <div class="col-2">
             </div>
             <div class="col-10" align="left">
-                Post as @userManager.GetUserAsync(User).Result.UserName.Split('@')[0]
+                Post as @((await userManager.GetUserAsync(User)).UserName.Split('@')[0])
             </div>
         </div>
         <div id="comment-row" class="row">
             <div id="photo-col" class="col-2" align="right">
-                <img id="input-comment-user-photo" src="@userManager.GetUserAsync(User).Result.PhotoUrl">
+                <img id="input-comment-user-photo" src="@((await userManager.GetUserAsync(User)).PhotoUrl)">
             </div>
             <div class="col-10" align="left">
                 <textarea id="comment-text" placeholder="Write your comment here..." rows="3"></textarea>

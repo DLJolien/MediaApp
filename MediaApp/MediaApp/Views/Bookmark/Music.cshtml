@@ -3,12 +3,12 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 
-<h1>My bookmarked films</h1>
+<h1>My bookmarked music</h1>
 
 <div id="filter-container" class="container">
     <div class="row">
         <div class="col-9">
-            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on film title" />
+            <input type="text" class="form-control" id="filter" name="filter" placeholder="Search on music title" />
         </div>
 
         <div class="col">
@@ -33,30 +33,30 @@
         {
             <div id="items" class="container">
                 <div class="row">
-                    @foreach (var film in Model)
+                    @foreach (var music in Model)
                     {
-                        <div id="div-@film.Id" class="col-3" name="@film.Seen">
+                        <div id="div-@music.Id" class="col-3" name="@music.Seen">
                             <div class="item">
-                                @if (film.Seen)
+                                @if (music.Seen)
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye-slash"></i></p>
+                                    <p id="seen-@music.Id" name="eye" class="slashed-eye" onclick="RemoveFromSeen(@music.Id)"><i id="icon-@music.Id" class="far fa-eye-slash"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="seen-@film.Id" name="eye" class="eye" onclick="AddToSeen(@film.Id)"><i id="icon-@film.Id" class="far fa-eye"></i></p>
+                                    <p id="seen-@music.Id" name="eye" class="eye" onclick="AddToSeen(@music.Id)"><i id="icon-@music.Id" class="far fa-eye"></i></p>
                                 }
 
-                                @if (film.Bookmarked)
+                                @if (music.Bookmarked)
                                 {
-                                    <p id="@film.Id" class="red-heart" name="heart"><i id="icon-heart-@film.Id" onclick="RemoveFilmFromBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@music.Id" class="red-heart" name="heart"><i id="icon-heart-@music.Id" onclick="RemoveFromBookmark(@music.Id)" class="fas fa-heart"></i></p>
                                 }
                                 else
                                 {
-                                    <p id="@film.Id" class="grey-heart" name="heart"><i id="icon-heart-@film.Id" onclick="AddFilmToBookmark(@film.Id)" class="fas fa-heart"></i></p>
+                                    <p id="@music.Id" class="grey-heart" name="heart"><i id="icon-heart-@music.Id" onclick="AddToBookmark(@music.Id)" class="fas fa-heart"></i></p>
                                 }
-                                <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
-                                    <img src="@film.PhotoUrl" />
-                                    <p>@film.Title - @film.ReleaseDate.Year</p>
+                                <a asp-controller="music" asp-action="detail" asp-route-id="@music.Id">
+                                    <img src="@music.PhotoUrl" />
+                                    <p>@music.Title - @music.ReleaseDate.Year</p>
                                 </a>
 
                             </div>
@@ -83,24 +83,24 @@
             var divs = document.getElementsByName("name");
             divs.forEach(x => x.style.backgroundColor = "rgba(0, 0, 0, 0.85)");
         }
-        function AddFilmToBookmark(id) {
+        function AddToBookmark(id) {
             $.post("/Bookmark/SaveToBookmarks", { id: id }, function () {
                 console.log("addedtobookmarks" + id);
             });
             var heart = document.getElementById(id);
             heart.style.color = "red";
             var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { RemoveFilmFromBookmark(id) };
+            icon.onclick = function () { RemoveFromBookmark(id) };
             console.log(icon);
         }
-        function RemoveFilmFromBookmark(id) {
+        function RemoveFromBookmark(id) {
             $.post("/Bookmark/RemoveFromBookmarks", { id: id }, function () {
                 console.log("removedfrombookmarks" + id);
             });
             var heart = document.getElementById(id);
             heart.style.color = "black";
             var icon = document.getElementById("icon-heart-" + id);
-            icon.onclick = function () { AddFilmToBookmark(id) };
+            icon.onclick = function () { AddToBookmark(id) };
             console.log(icon);
         }
         function FilterOn() {

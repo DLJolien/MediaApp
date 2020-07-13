@@ -32,25 +32,56 @@ namespace MediaApp.Controllers
             _photoService = photoService;
             _signInManager = signInManager;
         }
-        [AllowAnonymous]
-        public async Task<IActionResult> Index(string filter = "")
+        [Authorize]
+        public async Task<IActionResult> Film(string filter = "")
         {
-
-            IEnumerable<Playlist<Media>> playlists;
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int filmBookmarkId = _dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId).Result.BookmarkedFilmsId;
-         
-            if (!_signInManager.IsSignedIn(User))
+            int filmBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedFilmsId;
+            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(filmBookmarkId, filter, "Film");
+            return View(vmList);      
+        }
+        public async Task<IActionResult> Music(string filter = "")
+        {
+            int musicBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedMusicId;
+            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(musicBookmarkId, filter, "Music");
+            return View(vmList);
+        }
+        public async Task<IActionResult> Podcast(string filter = "")
+        {
+            int podcastBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedPodcastId;
+            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(podcastBookmarkId, filter, "Podcast");
+            return View(vmList);
+        }
+        public async Task<IActionResult> Series(string filter = "")
+        {
+            int seriesBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedSeriesId;
+            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(seriesBookmarkId, filter, "Series");
+            return View(vmList);
+        }
+
+        private async Task<List<PlaylistListViewModel>> GetPlaylistListViewModels(int id, string filter, string type)
+        {
+            IEnumerable<Playlist<Media>> playlists;
+           
+            if (User.IsInRole("Admin"))
             {
-                playlists = await _dbContext.Playlists.Include(x => x.User).Include(x => x.PlaylistMedias).ThenInclude(x => x.Media).Where(playlist => playlist.Public == true).ToListAsync();
-            }
-            else if (User.IsInRole("Admin"))
-            {               
-                playlists = await _dbContext.Playlists.Include(x => x.User).Include(x => x.PlaylistMedias).ThenInclude(x => x.Media).ToListAsync();
+                playlists = await _dbContext.Playlists
+                    .Include(x => x.User)
+                    .Include(x => x.PlaylistMedias)
+                    .ThenInclude(x => x.Media)
+                    .Where(playlist => playlist.Type == type && playlist.Id != id)
+                    .ToListAsync();
+
             }
             else
             {
-                playlists = await _dbContext.Playlists.Include(x => x.User).Include(x => x.PlaylistMedias).ThenInclude(x => x.Media).Where(playlist => (playlist.UserId == userId && playlist.Id != filmBookmarkId) || playlist.Public == true).ToListAsync();
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                playlists = await _dbContext.Playlists
+                    .Include(x => x.User)
+                    .Include(x => x.PlaylistMedias)
+                    .ThenInclude(x => x.Media)
+                    .Where(playlist => (playlist.UserId == userId || playlist.Public == true) && playlist.Type == type && playlist.Id != id)
+                    .ToListAsync();
             }
 
             if (!String.IsNullOrEmpty(filter))
@@ -73,8 +104,9 @@ namespace MediaApp.Controllers
                 };
                 vmList.Add(vm);
             }
-            return View(vmList);
+            return vmList;
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult Create(string mediaType)
@@ -102,7 +134,8 @@ namespace MediaApp.Controllers
                     Title = vm.Title,
                     Public = vm.Public,
                     UserId = userId,
-                    LastModified = DateTime.Now
+                    LastModified = DateTime.Now,
+                    Type = vm.MediaType
                 };
 
                 _dbContext.Playlists.Add(newPlaylist);
@@ -110,7 +143,7 @@ namespace MediaApp.Controllers
 
                 if (vm.MediaType == "Film")
                 {
-                    return RedirectToAction("ManageFilms", new { Id = newPlaylist.Id });
+                    return RedirectToAction("ManageItems", new { Id = newPlaylist.Id, type = "Film" });
                 }
                 else
                 {
@@ -121,53 +154,94 @@ namespace MediaApp.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ManageFilms(int id, string filterTitle = "")
+        public async Task<IActionResult> ManageItems(int id, string type, string filterTitle = "")
         {
-            IEnumerable<Film> films;
+            IEnumerable<Media> media;
 
-            if (!_signInManager.IsSignedIn(User))
+            if(type == "Film")
             {
-                films = await _dbContext.Films
-                    .Include(film => film.Genre)
-                    .OrderByDescending(film => film.ReleaseDate)
-                    .Where(film => film.Public == true)
-                    .ToListAsync();
-
+                if (User.IsInRole("Admin"))
+                {
+                    media = await _dbContext.Films
+                        .OrderByDescending(film => film.ReleaseDate)
+                        .ToListAsync();
+                }
+                else
+                {
+                    media = await _dbContext.Films
+                                       .OrderByDescending(film => film.ReleaseDate)
+                                       .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
+                                       .ToListAsync();
+                }
             }
-            else if (User.IsInRole("Admin"))
+            else if (type == "Music")
             {
-                films = await _dbContext.Films
-                    .Include(film => film.Genre)
-                    .OrderByDescending(film => film.ReleaseDate)
-                    .ToListAsync();
+                if (User.IsInRole("Admin"))
+                {
+                    media = await _dbContext.Music
+                        .OrderByDescending(music => music.ReleaseDate)
+                        .ToListAsync();
+                }
+                else
+                {
+                    media = await _dbContext.Music
+                                       .OrderByDescending(music => music.ReleaseDate)
+                                       .Where(music => music.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || music.Public == true)
+                                       .ToListAsync();
+                }
+            }
+            else if(type == "Podcast")
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    media = await _dbContext.Podcasts
+                        .OrderByDescending(podcast => podcast.ReleaseDate)
+                        .ToListAsync();
+                }
+                else
+                {
+                    media = await _dbContext.Podcasts
+                                       .OrderByDescending(podcast => podcast.ReleaseDate)
+                                       .Where(podcast => podcast.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || podcast.Public == true)
+                                       .ToListAsync();
+                }
             }
             else
             {
-                films = await _dbContext.Films
-                                    .Include(film => film.Genre)
-                                   .OrderByDescending(film => film.ReleaseDate)
-                                   .Where(film => film.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || film.Public == true)
-                                   .ToListAsync();
+                if (User.IsInRole("Admin"))
+                {
+                    media = await _dbContext.Series
+                        .OrderByDescending(series => series.ReleaseDate)
+                        .ToListAsync();
+                }
+                else
+                {
+                    media = await _dbContext.Series
+                                       .OrderByDescending(series => series.ReleaseDate)
+                                       .Where(series => series.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || series.Public == true)
+                                       .ToListAsync();
+                }
             }
 
             if (!String.IsNullOrEmpty(filterTitle))
             {
-                films = films.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower())).ToList();
+                media = media.Where(x => x.Title.ToLower().Contains(filterTitle.ToLower())).ToList();
             }
 
-            PlaylistAddFilmViewModel vm = new PlaylistAddFilmViewModel()
+            PlaylistManageItemsViewModel vm = new PlaylistManageItemsViewModel()
             {
                 PlaylistId = id,
+                Type = type
             };
 
-            vm.AllFilmsInLibrary.AddRange(films);
+            vm.AllItemsInLibrary.AddRange(media);
             vm.AlreadyIncluded = await _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == id).Select(x => x.Media).ToListAsync();
 
             return View(vm);
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddFilm(int playlistId, int mediaId)
+        public async Task<IActionResult> AddItem(int playlistId, int mediaId, string type)
         {
             Playlist<Media> playlist = await _dbContext.Playlists.FindAsync(playlistId);
             playlist.LastModified = DateTime.Now;
@@ -180,45 +254,22 @@ namespace MediaApp.Controllers
             _dbContext.PlaylistMedias.Add(playlistMedia);
             await _dbContext.SaveChangesAsync();
 
-            IEnumerable<Film> films;
-
-            films = await _dbContext.Films.Include(x => x.Genre).ToListAsync();
-
-            if (_signInManager.IsSignedIn(User) && !User.IsInRole("Admin"))
-            {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                films = films.Where(film => film.UserId == userId || film.Public == true);
-            }
-            else if (!_signInManager.IsSignedIn(User))
-            {
-                films = films.Where(film => film.Public == true);
-            }
-
-            var alreadyInPlaylist = await _dbContext.PlaylistMedias.Include(x => x.Media).Where(x => x.PlaylistId == playlistId).ToListAsync();
-            PlaylistAddFilmViewModel vm = new PlaylistAddFilmViewModel()
-            {
-                PlaylistId = playlistId,
-                AlreadyIncluded = alreadyInPlaylist.Select(x => x.Media).ToList(),
-            };
-
-            vm.AllFilmsInLibrary.AddRange(films);
-
-            return RedirectToAction("ManageFilms", new { id = playlistId });
+            return RedirectToAction("ManageItems", new { id = playlistId, type = type });
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> RemoveFilm(int playlistId, int mediaId)
+        public async Task<IActionResult> RemoveItem(int playlistId, int mediaId, string type)
         {
-            Playlist<Media> playlist = await _dbContext.Playlists.FindAsync(playlistId);
+            Playlist<Media> playlist = await _dbContext.Playlists.FirstOrDefaultAsync(x => x.Id == playlistId);
             playlist.LastModified = DateTime.Now;
 
             PlaylistMedia playlistMediaToDelete = await _dbContext.PlaylistMedias.FirstOrDefaultAsync(x => x.PlaylistId == playlistId && x.MediaId == mediaId);
             _dbContext.PlaylistMedias.Remove(playlistMediaToDelete);
             await _dbContext.SaveChangesAsync();
 
-            return RedirectToAction("ManageFilms", new { id = playlistId });
+            return RedirectToAction("ManageItems", new { id = playlistId, type = type });
         }
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> Detail(int id)
         {
 

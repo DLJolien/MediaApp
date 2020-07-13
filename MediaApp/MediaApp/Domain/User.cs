@@ -11,5 +11,8 @@ namespace MediaApp.Domain
     {
         public string PhotoUrl { get; set; }
         public int BookmarkedFilmsId { get; set; } = 0;
+        public int BookmarkedMusicId { get; set; } = 0;
+        public int BookmarkedPodcastId { get; set; } = 0;
+        public int BookmarkedSeriesId { get; set; } = 0;
     }
 }
