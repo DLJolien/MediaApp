@@ -299,7 +299,7 @@ namespace MediaApp.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string mediaType)
         {
             Playlist<Media> playlistToEdit = await _dbContext.Playlists.Include(x => x.PlaylistMedias).FirstOrDefaultAsync(x => x.Id == id);
 
@@ -308,6 +308,7 @@ namespace MediaApp.Controllers
                 Id = playlistToEdit.Id,
                 Title = playlistToEdit.Title,
                 Public = playlistToEdit.Public,
+                MediaType = mediaType
             };
             return View(vm);
         }
@@ -324,7 +325,7 @@ namespace MediaApp.Controllers
                 _dbContext.Playlists.Update(changedPlaylist);
                 await _dbContext.SaveChangesAsync();
 
-                return (RedirectToAction("Index"));
+                return (RedirectToAction("Index", new { mediaType = vm.MediaType }));
             }
             else
             {

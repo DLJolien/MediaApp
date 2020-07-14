@@ -15,5 +15,6 @@ namespace MediaApp.Models.Edit
         [Required(AllowEmptyStrings = false, ErrorMessage = "Title required to fill in.")]
         [MaxLength(40, ErrorMessage = "Only 40 chars allowed")]
         public string Title { get; set; }
+        public string MediaType { get; set; }
     }
 }

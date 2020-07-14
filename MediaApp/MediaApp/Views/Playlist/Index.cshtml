@@ -62,7 +62,7 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     @if (userManager.GetUserId(User) == @playlist.User.Id || User.IsInRole("Admin"))
                                     {
-                                        <a class="dropdown-item" onclick="GoToEdit(@playlist.Id)">Edit info</a>
+                                        <a class="dropdown-item" onclick="GoToEdit(@playlist.Id,'@Model.MediaType')">Edit info</a>
                                         <a class="dropdown-item" onclick="GoToManageItems(@playlist.Id,'@Model.MediaType')">Edit items</a>
                                         <a class="dropdown-item" onclick="GoToDelete(@playlist.Id,'@Model.MediaType')">Delete</a>
                                     }
@@ -92,8 +92,8 @@
     function GoToDelete(id, type) {
         window.location.href = "/Playlist/Delete/?id=" + id + "&type=" + type;;
     }
-    function GoToEdit(id) {
-        window.location.href = "/Playlist/Edit/?id=" + id;
+    function GoToEdit(id, type) {
+        window.location.href = "/Playlist/Edit/?id=" + id + "&mediaType=" + type;
     }
     function ClearFilter(id) {
         window.location.href = "?filter=";
