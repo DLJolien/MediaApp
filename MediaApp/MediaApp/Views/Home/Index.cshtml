@@ -1,8 +1,130 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using MediaApp.Models.Index
+@model TrendingListViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<MediaApp.Domain.User> signInManager
+@{
+    if (signInManager.IsSignedIn(User))
+    {
+        <h1>Welcome @User.Identity.Name.Split('@')[0]!</h1>
+    }
+    else
+    {
+        <h1>Welcome stranger!</h1>
+    }
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        <div class="col-6" align="left">
+            <h2> Trending films</h2>          
+        </div>
+        <div class="col-6" align="right">
+            <button onclick="RedirectToFilmOverview()" class="btn btn-info" type="button">See more films</button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var film in Model.MostCommentedFilms)
+        {
+            <div id="div-@film.Id" class="col-3">
+                <div class="item">
+                    <a asp-controller="film" asp-action="detail" asp-route-id="@film.Id">
+                        <img src="@film.PhotoUrl" />
+                        <p>@film.Title - @film.ReleaseDate.Year</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-6" align="left">
+            <h2>Trending podcasts</h2>
+        </div>
+        <div class="col-6" align="right">
+            <button onclick="RedirectToPodcastOverview()" class="btn btn-info" type="button">See more podcasts</button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var podcast in Model.MostCommentedPodcasts)
+        {
+            <div id="div-@podcast.Id" class="col-3">
+                <div class="item">
+                    <a asp-controller="podcast" asp-action="detail" asp-route-id="@podcast.Id">
+                        <img src="@podcast.PhotoUrl" />
+                        <p>@podcast.Title - @podcast.ReleaseDate.Year</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-6" align="left">
+            <h2>Trending music</h2>
+        </div>
+        <div class="col-6" align="right">
+            <button onclick="RedirectToMusicOverview()" class="btn btn-info" type="button">See more music</button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var music in Model.MostCommentedMusic)
+        {
+            <div id="div-@music.Id" class="col-3">
+                <div class="item">
+                    <a asp-controller="music" asp-action="detail" asp-route-id="@music.Id">
+                        <img src="@music.PhotoUrl" />
+                        <p>@music.Title - @music.ReleaseDate.Year</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-6" align="left">
+            <h2>Trending series</h2>
+        </div>
+        <div class="col-6" align="right">
+            <button onclick="RedirectToSeriesOverview()" class="btn btn-info" type="button">See more series</button>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var series in Model.MostCommentedSeries)
+        {
+            <div id="div-@series.Id" class="col-3">
+                <div class="item">
+                    <a asp-controller="series" asp-action="detail" asp-route-id="@series.Id">
+                        <img src="@series.PhotoUrl" />
+                        <p>@series.Title - @series.ReleaseDate.Year</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
 </div>
+<style>
+    h2 {
+        font-size: 25px;
+        color: #17a2b8;
+        font-weight: 400;
+    }
+    img {
+        width: 100%;
+        height: 320px;
+        display: block;
+    }
+    
+    div .col-3 .item {
+        width: 100%;
+    }
+
+div .col-3 .item a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black;
+  }
+
+    div .col-3 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+</style>
+
