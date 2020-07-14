@@ -23,9 +23,11 @@ namespace MediaApp.Services
             {
                 url = url.Substring(1);
             }
-
-            string pathName = Path.Combine(_hostEnvironment.WebRootPath, url);
-            File.Delete(pathName);
+            if(url != "icons/film.png" && url != "icons/music.jpg" && url != "icons/podcast.png" && url != "icons/series.png")
+            {
+                string pathName = Path.Combine(_hostEnvironment.WebRootPath, url);
+                File.Delete(pathName);
+            }          
         }
 
         public string UploadPicture(IFormFile photo)

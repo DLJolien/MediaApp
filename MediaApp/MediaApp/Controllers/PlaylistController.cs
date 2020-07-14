@@ -247,7 +247,7 @@ namespace MediaApp.Controllers
             _dbContext.PlaylistMedias.Remove(playlistMediaToDelete);
             await _dbContext.SaveChangesAsync();
 
-            return RedirectToAction("ManageItems", new { id = playlistId, type = type });
+            return RedirectToAction("ManageItems", new { id = playlistId, mediaType = type });
         }
         [Authorize]
         public async Task<IActionResult> Detail(int id)
