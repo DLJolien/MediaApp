@@ -6,7 +6,7 @@
             <h1>Add some items to your playlist...</h1>
         </div>
         <div class="col-3" align="right">
-            <button class="btn btn-info" onclick="Redirect()">
+            <button class="btn btn-info" onclick="Redirect('@Model.Type')">
                 @if (@Model.AlreadyIncluded.Count == 0)
                 {
                     <p>Continue without adding</p>
@@ -69,8 +69,8 @@
 
     <script src="https://kit.fontawesome.com/a6748bd2b3.js" crossorigin="anonymous"></script>
     <script>
-        function Redirect() {
-            window.location.href = '/playlist/index'
+        function Redirect(type) {
+            window.location.href = '/playlist/index?mediaType=' + type;
         }
         function FilterOn(id) {
             var filterTitle = document.getElementById('filter').value

@@ -1,5 +1,5 @@
 ﻿@using MediaApp.Models.Index
-@model IEnumerable<PlaylistListViewModel>
+@model PlaylistListViewModel
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<MediaApp.Domain.User> signInManager
 @inject UserManager<MediaApp.Domain.User> userManager
@@ -16,7 +16,7 @@
     </div>
 </div>
 
-@{if (Model.Count() == 0)
+@{if (Model.Playlists.Count() == 0)
     {
         <br />
         <strong>There are currently no playlist listed.</strong>
@@ -29,35 +29,29 @@
                     Title
                 </div>
                 <div class="col-2">
-                    Duration
-                </div>
-                <div class="col">
                     Amount
                 </div>
                 <div class="col-2">
                     Creator
                 </div>
-                <div class="col">
+                <div class="col-2">
                     Menu
                 </div>
             </div>
 
-            @foreach (PlaylistListViewModel playlist in Model)
+            @foreach (var playlist in Model.Playlists)
             {
                 <div class="row" id="items">
                     <div class="col-6">
                         @playlist.Title
                     </div>
                     <div class="col-2">
-                        @playlist.Duration
-                    </div>
-                    <div class="col">
                         @playlist.PlaylistMedias.Count
                     </div>
                     <div class="col-2">
                         @playlist.User.UserName.Split('@')[0]
                     </div>
-                    <div class="col">
+                    <div class="col-2">
                         @if (signInManager.IsSignedIn(User))
                         {
                             <div class="dropdown">
@@ -69,8 +63,8 @@
                                     @if (userManager.GetUserId(User) == @playlist.User.Id || User.IsInRole("Admin"))
                                     {
                                         <a class="dropdown-item" onclick="GoToEdit(@playlist.Id)">Edit info</a>
-                                        <a class="dropdown-item" onclick="GoToManageFilms(@playlist.Id)">Edit items</a>
-                                        <a class="dropdown-item" onclick="GoToDelete(@playlist.Id)">Delete</a>
+                                        <a class="dropdown-item" onclick="GoToManageItems(@playlist.Id,'@Model.MediaType')">Edit items</a>
+                                        <a class="dropdown-item" onclick="GoToDelete(@playlist.Id,'@Model.MediaType')">Delete</a>
                                     }
                                     <a class="dropdown-item" onclick="GoToDetail(@playlist.Id)">View details</a>
                                 </div>
@@ -88,15 +82,15 @@
     function GoToDetail(id) {
         window.location.href = "Detail/?id=" + id;
     }
-    function GoToManageFilms(id) {
-        window.location.href = "/Playlist/ManageItems/?id=" + id +"&type=Film";
+    function GoToManageItems(id,type) {
+        window.location.href = "/Playlist/ManageItems/?id=" + id +"&mediaType=" + type;
     }
     function FilterOn() {
         var filter = document.getElementById('filter').value
         window.location.href = "?filter=" + filter;
     }
-    function GoToDelete(id) {
-        window.location.href = "/Playlist/Delete/?id=" + id;
+    function GoToDelete(id, type) {
+        window.location.href = "/Playlist/Delete/?id=" + id + "&type=" + type;;
     }
     function GoToEdit(id) {
         window.location.href = "/Playlist/Edit/?id=" + id;

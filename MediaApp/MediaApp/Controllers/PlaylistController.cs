@@ -33,33 +33,31 @@ namespace MediaApp.Controllers
             _signInManager = signInManager;
         }
         [Authorize]
-        public async Task<IActionResult> Film(string filter = "")
+        public async Task<IActionResult> Index(string mediaType, string filter = "")
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int filmBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedFilmsId;
-            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(filmBookmarkId, filter, "Film");
-            return View(vmList);      
+            int id;
+            if (mediaType == "Film")
+            {
+                id = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId)).BookmarkedFilmsId;
+            }
+            else if(mediaType == "Podcast")
+            {
+            id = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId)).BookmarkedPodcastId;              
+            }
+            else if(mediaType == "Music")
+            {
+                id = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId)).BookmarkedMusicId;
+            }
+            else
+            {
+                id = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == userId)).BookmarkedSeriesId;
+            }                      
+            PlaylistListViewModel vm = await GetPlaylistListViewModels(id, filter, mediaType);
+            return View(vm);
         }
-        public async Task<IActionResult> Music(string filter = "")
-        {
-            int musicBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedMusicId;
-            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(musicBookmarkId, filter, "Music");
-            return View(vmList);
-        }
-        public async Task<IActionResult> Podcast(string filter = "")
-        {
-            int podcastBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedPodcastId;
-            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(podcastBookmarkId, filter, "Podcast");
-            return View(vmList);
-        }
-        public async Task<IActionResult> Series(string filter = "")
-        {
-            int seriesBookmarkId = (await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))).BookmarkedSeriesId;
-            List<PlaylistListViewModel> vmList = await GetPlaylistListViewModels(seriesBookmarkId, filter, "Series");
-            return View(vmList);
-        }
-
-        private async Task<List<PlaylistListViewModel>> GetPlaylistListViewModels(int id, string filter, string type)
+        
+        private async Task<PlaylistListViewModel> GetPlaylistListViewModels(int id, string filter, string type)
         {
             IEnumerable<Playlist<Media>> playlists;
            
@@ -90,21 +88,11 @@ namespace MediaApp.Controllers
                                             x.User.UserName.ToLower().Contains(filter.ToLower()));
             }
 
-            List<PlaylistListViewModel> vmList = new List<PlaylistListViewModel>();
-
-            foreach (var playlist in playlists)
-            {
-                PlaylistListViewModel vm = new PlaylistListViewModel()
-                {
-                    Id = playlist.Id,
-                    Title = playlist.Title,
-                    Duration = new TimeSpan(playlist.PlaylistMedias.Select(x => x.Media).Sum(x => x.Duration.Ticks)),
-                    User = playlist.User,
-                    PlaylistMedias = playlist.PlaylistMedias
-                };
-                vmList.Add(vm);
-            }
-            return vmList;
+            PlaylistListViewModel vm = new PlaylistListViewModel() { 
+            Playlists = playlists,
+            MediaType = type
+            };
+            return vm;
         }
 
         [Authorize]
@@ -141,24 +129,16 @@ namespace MediaApp.Controllers
                 _dbContext.Playlists.Add(newPlaylist);
                 await _dbContext.SaveChangesAsync();
 
-                if (vm.MediaType == "Film")
-                {
-                    return RedirectToAction("ManageItems", new { Id = newPlaylist.Id, type = "Film" });
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
-
+                    return RedirectToAction("ManageItems", new { id = newPlaylist.Id, mediaType = vm.MediaType });              
             }
         }
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ManageItems(int id, string type, string filterTitle = "")
+        public async Task<IActionResult> ManageItems(int id, string mediaType, string filterTitle = "")
         {
             IEnumerable<Media> media;
 
-            if(type == "Film")
+            if(mediaType == "Film")
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -174,7 +154,7 @@ namespace MediaApp.Controllers
                                        .ToListAsync();
                 }
             }
-            else if (type == "Music")
+            else if (mediaType == "Music")
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -190,7 +170,7 @@ namespace MediaApp.Controllers
                                        .ToListAsync();
                 }
             }
-            else if(type == "Podcast")
+            else if(mediaType == "Podcast")
             {
                 if (User.IsInRole("Admin"))
                 {
@@ -231,7 +211,7 @@ namespace MediaApp.Controllers
             PlaylistManageItemsViewModel vm = new PlaylistManageItemsViewModel()
             {
                 PlaylistId = id,
-                Type = type
+                Type = mediaType
             };
 
             vm.AllItemsInLibrary.AddRange(media);
@@ -254,7 +234,7 @@ namespace MediaApp.Controllers
             _dbContext.PlaylistMedias.Add(playlistMedia);
             await _dbContext.SaveChangesAsync();
 
-            return RedirectToAction("ManageItems", new { id = playlistId, type = type });
+            return RedirectToAction("ManageItems", new { id = playlistId, mediaType = type });
         }
         [Authorize]
         [HttpPost]
@@ -293,28 +273,29 @@ namespace MediaApp.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, string type)
         {
             Playlist<Media> playlistToDelete = await _dbContext.Playlists.FindAsync(id);
             PlaylistDeleteViewModel vm = new PlaylistDeleteViewModel()
             {
                 Id = playlistToDelete.Id,
-                Title = playlistToDelete.Title
+                Title = playlistToDelete.Title,
+                MediaType = type
             };
             return View(vm);
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ConfirmDelete(int id)
+        public async Task<IActionResult> ConfirmDelete(int id, string type)
         {
-            Playlist<Media> playlistToDelete = await _dbContext.Playlists.FindAsync(id);
+            Playlist<Media> playlistToDelete = await _dbContext.Playlists.FirstOrDefaultAsync(x => x.Id == id);
             if (playlistToDelete.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) || User.IsInRole("Admin"))
             {
                 _dbContext.Playlists.Remove(playlistToDelete);
                 await _dbContext.SaveChangesAsync();
             }
 
-            return (RedirectToAction("Index"));
+            return (RedirectToAction("Index", new { mediaType = type }));
         }
         [Authorize]
         [HttpGet]

@@ -9,5 +9,6 @@ namespace MediaApp.Models.Delete
     {
         public int Id { get; set; }    
         public string Title { get; set; }
+        public string MediaType { get; set; }
     }
 }

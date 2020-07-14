@@ -9,11 +9,8 @@ namespace MediaApp.Models.Index
 {
     public class PlaylistListViewModel
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string UserId { get; set; }
-        public User User { get; set; }
+        public IEnumerable<Playlist<Media>> Playlists { get; set; }
         public ICollection<PlaylistMedia> PlaylistMedias { get; set; }
-        public TimeSpan Duration { get; set; }
+        public string MediaType { get; set; }
     }
 }

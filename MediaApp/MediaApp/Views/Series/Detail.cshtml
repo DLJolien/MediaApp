@@ -34,12 +34,6 @@
         <div class="Release-Date-Input">
             <p>@Model.ReleaseDate.ToShortDateString()</p>
         </div>
-        <div class="Duration-Label">
-            <strong>Duration</strong>
-        </div>
-        <div class="Duration-Input">
-            <p>@Model.Duration</p>
-        </div>
         <div class="Genre-Label">
             <strong>Genre</strong>
         </div>
@@ -225,9 +219,9 @@ else
     .grid-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         gap: 1px 1px;
-        grid-template-areas: "Title Title Title" "Photo Broadcaster-Label Broadcaster-Input" "Photo NumberOfSeasons-Label NumberOfSeasons-Input" "Photo NumberOfEpisodes-Label NumberOfEpisodes-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Duration-Label Duration-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
+        grid-template-areas: "Title Title Title" "Photo Broadcaster-Label Broadcaster-Input" "Photo NumberOfSeasons-Label NumberOfSeasons-Input" "Photo NumberOfEpisodes-Label NumberOfEpisodes-Input" "Photo Release-Date-Label Release-Date-Input" "Photo Genre-Label Genre-Input" "Photo Accessibility-Label Accessibility-Input" "Photo View-Content View-Content" "Functions Functions Functions";
     }
 
     .Photo {

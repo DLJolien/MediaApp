@@ -3,15 +3,15 @@
 <div id="delete-container" class="container">
     <div class="row">
     <div class="col-12">
-        <h1>Are you sure you want to delete the playlist @Model.Title?</h1>
+        <h1>Are you sure you want to delete the @Model.MediaType playlist @Model.Title?</h1>
     </div>  
     </div>
     <div class=row>
         <div class="col-6" align="right">           
-            <button class="btn btn-dark"  onclick="GoToPlaylistIndex()">Cancel</button>
+            <button class="btn btn-dark"  onclick="GoToPlaylistIndex(@Model.MediaType)">Cancel</button>
         </div>
         <div class="col-6" align="left">
-            <form asp-controller="Playlist" asp-action="ConfirmDelete" method="post" asp-route-id="@Model.Id">
+            <form asp-controller="Playlist" asp-action="ConfirmDelete" method="post" asp-route-id="@Model.Id" asp-route-type="@Model.MediaType">
                 <button class="btn btn-info">Yes</button>
             </form>
         </div>
@@ -19,8 +19,8 @@
 </div>
 
 <script>
-    function GoToPlaylistIndex() {
-        window.location.href = '/playlist/index'
+    function GoToPlaylistIndex(type) {
+        window.location.href = '/playlist/index?mediatype=' + type;
     }
 </script>
 <style>
